@@ -33,6 +33,12 @@ export default function Navbar() {
           <h2>מפרגנים</h2>
         </div>
         <div className={styles.userSection}>
+          <button 
+            onClick={() => router.push('/my-business')} 
+            className={styles.businessButton}
+          >
+            העסק שלי
+          </button>
           {user.photoURL && (
             <Image
               src={user.photoURL}

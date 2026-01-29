@@ -32,6 +32,22 @@
   gap: 1rem;
 }
 
+.businessButton {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #171717;
+  background-color: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.businessButton:hover {
+  background-color: #e8e8e8;
+}
+
 .profileImage {
   width: 40px;
   height: 40px;
