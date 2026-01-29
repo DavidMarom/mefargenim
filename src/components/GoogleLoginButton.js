@@ -80,7 +80,7 @@ export default function GoogleLoginButton() {
         disabled={loading}
         className={styles.button}
       >
-        {loading ? "Signing in..." : "Login with Google"}
+        {loading ? "מתחבר..." : "התחבר עם Google"}
       </button>
       {error && <p className={styles.error}>{error}</p>}
     </div>

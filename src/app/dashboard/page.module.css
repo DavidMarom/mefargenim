@@ -1,74 +1,56 @@
 .page {
   display: flex;
+  flex-direction: column;
   min-height: 100vh;
-  align-items: center;
-  justify-content: center;
+  background-color: #ffffff;
 }
 
 .main {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   padding: 2rem;
   gap: 2rem;
+  margin-top: 80px;
+  flex: 1;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
 }
 
 .main h1 {
   font-size: 2.5rem;
   font-weight: 600;
-  text-align: center;
-}
-
-.userInfo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-  padding: 2rem;
-  background-color: #f5f5f5;
-  border-radius: 8px;
-  min-width: 300px;
-}
-
-.avatar {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  object-fit: cover;
-  display: block;
-}
-
-.details {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  text-align: center;
-}
-
-.details p {
+  text-align: right;
+  color: #171717;
   margin: 0;
-  font-size: 1rem;
 }
 
-.logoutButton {
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 500;
-  color: #fff;
-  background-color: #d32f2f;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s;
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
 }
 
-.logoutButton:hover {
-  background-color: #b71c1c;
+.noDocuments {
+  text-align: center;
+  color: #666;
+  font-size: 1.125rem;
+  padding: 2rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  .userInfo {
-    background-color: #1a1a1a;
+@media (max-width: 768px) {
+  .main {
+    padding: 1rem;
+  }
+
+  .cardsGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .main h1 {
+    font-size: 2rem;
   }
 }
