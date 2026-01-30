@@ -54,7 +54,14 @@ export default function Navbar() {
         </div>
         <div className={styles.logo}>
           <Link href="/dashboard">
-            <h2>מפרגנים</h2>
+            <Image
+              src="/mlogo.png"
+              alt="מפרגנים"
+              width={100}
+              height={70}
+              className={styles.logoImage}
+              priority
+            />
           </Link>
         </div>
       </div>
