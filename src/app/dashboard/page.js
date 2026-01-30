@@ -108,7 +108,7 @@ export default function Dashboard() {
         {loadingBiz ? (
           <p>טוען מסמכים...</p>
         ) : filteredDocuments.length === 0 ? (
-          <p className={styles.noDocuments}>אין מסמכים להצגה</p>
+          <p className={styles.noDocuments}>אין לנו כאלה... שלח לבעלי עסקים והם יוכלו להיות הראשונים במערכת!</p>
         ) : (
           <div className={styles.cardsGrid}>
             {filteredDocuments.map((doc, index) => (
