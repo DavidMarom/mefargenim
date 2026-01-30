@@ -23,6 +23,30 @@ export async function getAllBizDocuments() {
 }
 
 /**
+ * Get the most recent businesses (sorted by createdAt, newest first)
+ * @param {number} limit - Number of businesses to return (default: 3)
+ * @returns {Promise<Array>} - Array of the most recent business documents
+ */
+export async function getRecentBusinesses(limit = 3) {
+  try {
+    const client = await clientPromise;
+    const db = client.db(DB_NAME);
+    const collection = db.collection(COLLECTION_NAME);
+    
+    const documents = await collection
+      .find({})
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .toArray();
+    
+    return documents;
+  } catch (error) {
+    console.error('Error fetching recent businesses:', error);
+    throw error;
+  }
+}
+
+/**
  * Get a business by MongoDB _id
  * @param {string} businessId - Business MongoDB _id
  * @returns {Promise<Object|null>} - Business document if found, null otherwise
