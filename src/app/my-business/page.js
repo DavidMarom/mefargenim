@@ -7,13 +7,12 @@ import { auth } from "../../services/fb";
 import { useUserStore } from "../../store/userStore";
 import Navbar from "../../components/Navbar/Navbar";
 import { businessTypes } from "../../data/businessTypes";
+import { useMyBusiness } from "../../hooks/useMyBusiness";
+import { useSaveBusiness, useDeleteBusiness } from "../../hooks/useBusinessMutations";
 import styles from "./page.module.css";
 
 export default function MyBusiness() {
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [deleting, setDeleting] = useState(false);
-  const [business, setBusiness] = useState(null);
   const [formData, setFormData] = useState({
     title: '',
     type: '',
@@ -24,6 +23,13 @@ export default function MyBusiness() {
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
   const clearUser = useUserStore((state) => state.clearUser);
+  
+  // Use React Query to fetch my business
+  const { data: business, isLoading: loadingBusiness } = useMyBusiness(user?.uid);
+  
+  // Mutations
+  const saveBusinessMutation = useSaveBusiness();
+  const deleteBusinessMutation = useDeleteBusiness();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
@@ -39,30 +45,17 @@ export default function MyBusiness() {
     return () => unsubscribe();
   }, [router, setUser, clearUser]);
 
+  // Update form data when business is loaded
   useEffect(() => {
-    if (user?.uid) {
-      fetchBusiness();
+    if (business) {
+      setFormData({
+        title: business.title || '',
+        type: business.type || '',
+        phone: business.phone || '',
+        city: business.city || '',
+      });
     }
-  }, [user]);
-
-  const fetchBusiness = async () => {
-    try {
-      const response = await fetch(`/api/biz/my-business?userId=${user.uid}`);
-      const data = await response.json();
-      
-      if (data.success && data.data) {
-        setBusiness(data.data);
-        setFormData({
-          title: data.data.title || '',
-          type: data.data.type || '',
-          phone: data.data.phone || '',
-          city: data.data.city || '',
-        });
-      }
-    } catch (error) {
-      console.error('Error fetching business:', error);
-    }
-  };
+  }, [business]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -74,70 +67,41 @@ export default function MyBusiness() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSaving(true);
+    
+    if (!user?.uid) return;
 
     try {
-      const response = await fetch('/api/biz/my-business', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: user.uid,
-          businessData: formData,
-        }),
+      await saveBusinessMutation.mutateAsync({
+        userId: user.uid,
+        businessData: formData,
       });
-
-      const data = await response.json();
-      
-      if (data.success) {
-        setBusiness(data.data);
-        alert('העסק נשמר בהצלחה!');
-      } else {
-        alert('שגיאה בשמירת העסק');
-      }
+      alert('העסק נשמר בהצלחה!');
     } catch (error) {
       console.error('Error saving business:', error);
       alert('שגיאה בשמירת העסק');
-    } finally {
-      setSaving(false);
     }
   };
 
   const handleDelete = async () => {
-    if (!business) return;
+    if (!business || !user?.uid) return;
 
     const confirmed = window.confirm('האם אתה בטוח שברצונך למחוק את העסק? פעולה זו לא ניתנת לביטול.');
     
     if (!confirmed) return;
 
-    setDeleting(true);
-
     try {
-      const response = await fetch(`/api/biz/my-business?userId=${user.uid}`, {
-        method: 'DELETE',
+      await deleteBusinessMutation.mutateAsync(user.uid);
+      alert('העסק נמחק בהצלחה!');
+      setFormData({
+        title: '',
+        type: '',
+        phone: '',
+        city: '',
       });
-
-      const data = await response.json();
-      
-      if (data.success) {
-        alert('העסק נמחק בהצלחה!');
-        setBusiness(null);
-        setFormData({
-          title: '',
-          type: '',
-          phone: '',
-          city: '',
-        });
-        router.push('/dashboard');
-      } else {
-        alert('שגיאה במחיקת העסק');
-      }
+      router.push('/dashboard');
     } catch (error) {
       console.error('Error deleting business:', error);
       alert('שגיאה במחיקת העסק');
-    } finally {
-      setDeleting(false);
     }
   };
 
@@ -218,17 +182,17 @@ export default function MyBusiness() {
           </div>
 
           <div className={styles.buttonsContainer}>
-            <button type="submit" disabled={saving} className={styles.submitButton}>
-              {saving ? 'שומר...' : 'שמור'}
+            <button type="submit" disabled={saveBusinessMutation.isPending} className={styles.submitButton}>
+              {saveBusinessMutation.isPending ? 'שומר...' : 'שמור'}
             </button>
             {business && (
               <button 
                 type="button" 
                 onClick={handleDelete} 
-                disabled={deleting} 
+                disabled={deleteBusinessMutation.isPending} 
                 className={styles.deleteButton}
               >
-                {deleting ? 'מוחק...' : 'מחק עסק'}
+                {deleteBusinessMutation.isPending ? 'מוחק...' : 'מחק עסק'}
               </button>
             )}
           </div>

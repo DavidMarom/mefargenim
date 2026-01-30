@@ -6,17 +6,20 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../../services/fb";
 import { useUserStore } from "../../../store/userStore";
 import Navbar from "../../../components/Navbar/Navbar";
+import { useBusiness } from "../../../hooks/useBusiness";
 import styles from "./page.module.css";
 
 export default function BusinessDetail() {
   const [loading, setLoading] = useState(true);
-  const [business, setBusiness] = useState(null);
   const [copied, setCopied] = useState(false);
   const params = useParams();
   const router = useRouter();
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
   const clearUser = useUserStore((state) => state.clearUser);
+  
+  // Use React Query to fetch business
+  const { data: business, isLoading: loadingBusiness, error } = useBusiness(params?.id);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
@@ -31,30 +34,6 @@ export default function BusinessDetail() {
 
     return () => unsubscribe();
   }, [router, setUser, clearUser]);
-
-  useEffect(() => {
-    if (params?.id) {
-      fetchBusiness();
-    }
-  }, [params]);
-
-  const fetchBusiness = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(`/api/biz/${params.id}`);
-      const data = await response.json();
-      
-      if (data.success && data.data) {
-        setBusiness(data.data);
-      } else {
-        console.error('Failed to fetch business:', data.error);
-      }
-    } catch (error) {
-      console.error('Error fetching business:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleShare = async () => {
     if (!params?.id) return;
@@ -124,7 +103,18 @@ export default function BusinessDetail() {
     return null;
   }
 
-  if (!business) {
+  if (loadingBusiness) {
+    return (
+      <div className={styles.page}>
+        <Navbar />
+        <main className={styles.main}>
+          <p>טוען עסק...</p>
+        </main>
+      </div>
+    );
+  }
+
+  if (error || !business) {
     return (
       <div className={styles.page}>
         <Navbar />

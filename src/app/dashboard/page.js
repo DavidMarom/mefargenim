@@ -8,12 +8,11 @@ import { useUserStore } from "../../store/userStore";
 import Navbar from "../../components/Navbar/Navbar";
 import BizCard from "../../components/BizCard/BizCard";
 import { businessTypes } from "../../data/businessTypes";
+import { useBusinesses } from "../../hooks/useBusinesses";
 import styles from "./page.module.css";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
-  const [bizDocuments, setBizDocuments] = useState([]);
-  const [loadingBiz, setLoadingBiz] = useState(true);
   const [selectedType, setSelectedType] = useState("all");
   const [selectedCity, setSelectedCity] = useState("all");
   const [copied, setCopied] = useState(false);
@@ -21,6 +20,9 @@ export default function Dashboard() {
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
   const clearUser = useUserStore((state) => state.clearUser);
+  
+  // Use React Query to fetch businesses
+  const { data: bizDocuments = [], isLoading: loadingBiz, error } = useBusinesses();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
@@ -36,31 +38,6 @@ export default function Dashboard() {
 
     return () => unsubscribe();
   }, [router, setUser, clearUser]);
-
-  useEffect(() => {
-    // Fetch Biz documents when user is authenticated
-    if (user) {
-      fetchBizDocuments();
-    }
-  }, [user]);
-
-  const fetchBizDocuments = async () => {
-    try {
-      setLoadingBiz(true);
-      const response = await fetch('/api/biz');
-      const data = await response.json();
-      
-      if (data.success) {
-        setBizDocuments(data.data || []);
-      } else {
-        console.error('Failed to fetch Biz documents:', data.error);
-      }
-    } catch (error) {
-      console.error('Error fetching Biz documents:', error);
-    } finally {
-      setLoadingBiz(false);
-    }
-  };
 
   const handleShare = async () => {
     const url = window.location.origin;
@@ -159,6 +136,8 @@ export default function Dashboard() {
         </div>
         {loadingBiz ? (
           <p>טוען מסמכים...</p>
+        ) : error ? (
+          <p>שגיאה בטעינת העסקים. נסה שוב מאוחר יותר.</p>
         ) : filteredDocuments.length === 0 ? (
           <div className={styles.noResultsContainer}>
             <p className={styles.noDocuments}>אין לנו כאלה... שלח לבעלי עסקים והם יוכלו להיות הראשונים במערכת!</p>

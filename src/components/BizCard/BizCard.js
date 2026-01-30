@@ -26,7 +26,7 @@ export default function BizCard({ document }) {
         `/api/likes?userId=${user.uid}&businessId=${document._id}`
       );
       const data = await response.json();
-      
+
       if (data.success) {
         setLiked(data.liked);
         setLikeCount(data.count || 0);
@@ -56,7 +56,7 @@ export default function BizCard({ document }) {
       });
 
       const data = await response.json();
-      
+
       if (data.success) {
         setLiked(data.liked);
         setLikeCount(data.count || 0);
@@ -72,11 +72,11 @@ export default function BizCard({ document }) {
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
-      
+
       // Save user information to Zustand store
       const setUser = useUserStore.getState().setUser;
       setUser(result.user);
-      
+
       // Check if user exists in MongoDB, create if doesn't exist
       if (result.user?.email) {
         try {
@@ -99,12 +99,12 @@ export default function BizCard({ document }) {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ 
+            body: JSON.stringify({
               email: result.user.email,
-              userData: userData 
+              userData: userData
             }),
           });
-          
+
           const data = await response.json();
           if (data.created) {
             console.log('New user created in database');
@@ -116,7 +116,7 @@ export default function BizCard({ document }) {
           // Don't block login if database operation fails
         }
       }
-      
+
       // After successful login, redirect to the business detail page
       router.push(`/business/${document._id?.toString() || document._id}`);
     } catch (err) {
@@ -125,40 +125,24 @@ export default function BizCard({ document }) {
   };
 
   const handleOpen = () => {
-    if (!user) {
-      // If user is not logged in, trigger Google login
-      handleGoogleLogin();
-    } else {
-      // If user is logged in, navigate to business detail page
-      router.push(`/business/${document._id?.toString() || document._id}`);
-    }
+    if (!user) { handleGoogleLogin() }
+    else { router.push(`/business/${document._id?.toString() || document._id}`) }
   };
   // Function to get display label for field names
   const getDisplayLabel = (key) => {
-    if (key === 'title') {
-      return 'שם העסק';
-    }
-    if (key === 'type') {
-      return 'סוג העסק';
-    }
-    if (key === 'phone') {
-      return 'טלפון';
-    }
-    if (key === 'email') {
-      return 'אימייל העסק';
-    }
-    if (key === 'city') {
-      return 'עיר';
-    }
+    if (key === 'title') { return 'שם העסק' }
+    if (key === 'type') { return 'סוג העסק' }
+    if (key === 'phone') { return 'טלפון' }
+    if (key === 'city') { return 'עיר' }
     return key;
   };
 
   // Only show title, type, phone, and city
   const allowedFields = ['title', 'type', 'phone', 'city'];
-  const entries = Object.entries(document).filter(([key]) => 
+  const entries = Object.entries(document).filter(([key]) =>
     allowedFields.includes(key)
   );
-  
+
   // Sort entries to ensure title is first, then type, phone, city
   entries.sort(([keyA], [keyB]) => {
     const order = ['title', 'type', 'phone', 'city'];
@@ -211,14 +195,9 @@ export default function BizCard({ document }) {
               {liked ? '❤️' : '🤍'}
             </span>
           </button>
-          {likeCount > 0 && (
-            <span className={styles.likeCount}>{likeCount}</span>
-          )}
+          {likeCount > 0 && (<span className={styles.likeCount}>{likeCount}</span>)}
         </div>
-        <button
-          onClick={handleOpen}
-          className={styles.openButton}
-        >
+        <button onClick={handleOpen} className={styles.openButton}>
           פתח
         </button>
       </div>

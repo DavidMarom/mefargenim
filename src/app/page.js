@@ -7,16 +7,18 @@ import Image from "next/image";
 import { auth } from "../services/fb";
 import { useUserStore } from "../store/userStore";
 import BizCard from "../components/BizCard/BizCard";
+import { useRecentBusinesses } from "../hooks/useRecentBusinesses";
 import styles from "./page.module.css";
 import GoogleLoginButton from "../components/GoogleLoginButton/GoogleLoginButton";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
-  const [recentBusinesses, setRecentBusinesses] = useState([]);
-  const [loadingBusinesses, setLoadingBusinesses] = useState(true);
   const router = useRouter();
   const setUser = useUserStore((state) => state.setUser);
   const clearUser = useUserStore((state) => state.clearUser);
+  
+  // Use React Query to fetch recent businesses
+  const { data: recentBusinesses = [], isLoading: loadingBusinesses } = useRecentBusinesses(3);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -27,31 +29,11 @@ export default function Home() {
       } else {
         clearUser();
         setLoading(false);
-        // Fetch recent businesses when user is not logged in
-        fetchRecentBusinesses();
       }
     });
 
     return () => unsubscribe();
   }, [router, setUser, clearUser]);
-
-  const fetchRecentBusinesses = async () => {
-    try {
-      setLoadingBusinesses(true);
-      const response = await fetch('/api/biz/recent?limit=3');
-      const data = await response.json();
-
-      if (data.success) {
-        setRecentBusinesses(data.data || []);
-      } else {
-        console.error('Failed to fetch recent businesses:', data.error);
-      }
-    } catch (error) {
-      console.error('Error fetching recent businesses:', error);
-    } finally {
-      setLoadingBusinesses(false);
-    }
-  };
 
   if (loading) {
     return (
