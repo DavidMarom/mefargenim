@@ -25,6 +25,19 @@
   margin: 0;
 }
 
+.logoContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.logo {
+  object-fit: contain;
+  max-width: 100%;
+  height: auto;
+}
+
 .main h1 span {
   font-family: var(--font-logo);
 }
@@ -55,6 +68,15 @@
 @media (max-width: 768px) {
   .main {
     padding: 1rem;
+  }
+
+  .logoContainer {
+    margin-bottom: 0.5rem;
+  }
+
+  .logo {
+    width: 150px;
+    height: 150px;
   }
 
   .cardsGrid {
