@@ -1,8 +1,68 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { useUserStore } from "@/store/userStore";
 import styles from "./BizCard.module.css";
 
 export default function BizCard({ document }) {
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const user = useUserStore((state) => state.user);
+
+  useEffect(() => {
+    if (user?.uid && document?._id) {
+      fetchLikeStatus();
+    }
+  }, [user, document]);
+
+  const fetchLikeStatus = async () => {
+    try {
+      const response = await fetch(
+        `/api/likes?userId=${user.uid}&businessId=${document._id}`
+      );
+      const data = await response.json();
+      
+      if (data.success) {
+        setLiked(data.liked);
+        setLikeCount(data.count || 0);
+      }
+    } catch (error) {
+      console.error('Error fetching like status:', error);
+    }
+  };
+
+  const handleLike = async () => {
+    if (!user?.uid || loading) return;
+
+    // Prevent liking if already liked
+    if (liked) return;
+
+    try {
+      setLoading(true);
+      const response = await fetch('/api/likes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user.uid,
+          businessId: document._id.toString(),
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        setLiked(data.liked);
+        setLikeCount(data.count || 0);
+      }
+    } catch (error) {
+      console.error('Error toggling like:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
   // Function to get display label for field names
   const getDisplayLabel = (key) => {
     if (key === 'title') {
@@ -77,6 +137,18 @@ export default function BizCard({ document }) {
             </div>
           );
         })}
+      </div>
+      <div className={styles.likeSection}>
+        <button
+          onClick={handleLike}
+          disabled={liked || loading || !user}
+          className={`${styles.likeButton} ${liked ? styles.liked : ''}`}
+        >
+          {liked ? '✓ אהבתי' : 'אהבתי'}
+        </button>
+        {likeCount > 0 && (
+          <span className={styles.likeCount}>{likeCount}</span>
+        )}
       </div>
     </div>
   );
