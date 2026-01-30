@@ -4,8 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import { auth } from "../services/fb";
-import { useUserStore } from "../store/userStore";
+import { auth } from "../../services/fb";
+import { useUserStore } from "../../store/userStore";
 import styles from "./Navbar.module.css";
 
 export default function Navbar() {

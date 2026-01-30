@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../services/fb";
 import { useUserStore } from "../../store/userStore";
-import Navbar from "../../components/Navbar";
+import Navbar from "../../components/Navbar/Navbar";
 import styles from "./page.module.css";
 
 export default function MyBusiness() {

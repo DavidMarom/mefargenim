@@ -6,7 +6,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../services/fb";
 import { useUserStore } from "../store/userStore";
 import styles from "./page.module.css";
-import GoogleLoginButton from "../components/GoogleLoginButton";
+import GoogleLoginButton from "../components/GoogleLoginButton/GoogleLoginButton";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);

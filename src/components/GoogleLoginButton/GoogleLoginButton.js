@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { auth } from "../services/fb";
-import { useUserStore } from "../store/userStore";
+import { auth } from "../../services/fb";
+import { useUserStore } from "../../store/userStore";
 import styles from "./GoogleLoginButton.module.css";
 
 export default function GoogleLoginButton() {
