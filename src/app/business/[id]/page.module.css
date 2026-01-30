@@ -64,6 +64,29 @@
   flex: 1;
 }
 
+.actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.shareButton {
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff;
+  background-color: #25d366;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.shareButton:hover {
+  background-color: #20ba5a;
+}
+
 .backButton {
   padding: 0.75rem 2rem;
   font-size: 1rem;
@@ -74,8 +97,6 @@
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s;
-  align-self: flex-end;
-  margin-top: 1rem;
 }
 
 .backButton:hover {

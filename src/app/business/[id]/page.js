@@ -11,6 +11,7 @@ import styles from "./page.module.css";
 export default function BusinessDetail() {
   const [loading, setLoading] = useState(true);
   const [business, setBusiness] = useState(null);
+  const [copied, setCopied] = useState(false);
   const params = useParams();
   const router = useRouter();
   const user = useUserStore((state) => state.user);
@@ -52,6 +53,30 @@ export default function BusinessDetail() {
       console.error('Error fetching business:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleShare = async () => {
+    if (!params?.id) return;
+
+    const url = `${window.location.origin}/business/${params.id}`;
+    
+    try {
+      // Copy URL to clipboard
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      
+      // Reset copied state after 2 seconds
+      setTimeout(() => setCopied(false), 2000);
+      
+      // Open WhatsApp web with the URL
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(url)}`;
+      window.open(whatsappUrl, '_blank');
+    } catch (error) {
+      console.error('Error sharing:', error);
+      // Fallback: try to open WhatsApp directly
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(url)}`;
+      window.open(whatsappUrl, '_blank');
     }
   };
 
@@ -149,12 +174,20 @@ export default function BusinessDetail() {
             );
           })}
         </div>
-        <button 
-          onClick={() => router.push('/dashboard')} 
-          className={styles.backButton}
-        >
-          חזור
-        </button>
+        <div className={styles.actions}>
+          <button 
+            onClick={handleShare}
+            className={styles.shareButton}
+          >
+            {copied ? '✓ הועתק!' : 'שתף'}
+          </button>
+          <button 
+            onClick={() => router.push('/dashboard')} 
+            className={styles.backButton}
+          >
+            חזור
+          </button>
+        </div>
       </main>
     </div>
   );
