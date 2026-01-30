@@ -44,8 +44,11 @@ export default function Navbar() {
             התנתק
           </button>
         </div>
-        <div className={styles.centerLink}>
-          <Link href="/my-business" className={styles.businessLink}>
+        <div className={styles.centerLinks}>
+          <Link href="/dashboard" className={styles.navLink}>
+            ראשי
+          </Link>
+          <Link href="/my-business" className={styles.navLink}>
             העסק שלי
           </Link>
         </div>

@@ -6,6 +6,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../services/fb";
 import { useUserStore } from "@/store/userStore";
 import Navbar from "../../components/Navbar/Navbar";
+import { businessTypes } from "../../data/businessTypes";
 import styles from "./page.module.css";
 
 export default function MyBusiness() {
@@ -15,12 +16,8 @@ export default function MyBusiness() {
   const [formData, setFormData] = useState({
     title: '',
     type: '',
-    address: '',
     phone: '',
-    email: '',
     city: '',
-    zip: '',
-    country: '',
   });
   const router = useRouter();
   const user = useUserStore((state) => state.user);
@@ -57,12 +54,8 @@ export default function MyBusiness() {
         setFormData({
           title: data.data.title || '',
           type: data.data.type || '',
-          address: data.data.address || '',
           phone: data.data.phone || '',
-          email: data.data.email || '',
           city: data.data.city || '',
-          zip: data.data.zip || '',
-          country: data.data.country || '',
         });
       }
     } catch (error) {
@@ -146,26 +139,20 @@ export default function MyBusiness() {
 
           <div className={styles.formGroup}>
             <label htmlFor="type">סוג העסק:</label>
-            <input
-              type="text"
+            <select
               id="type"
               name="type"
               value={formData.type}
               onChange={handleInputChange}
               className={styles.input}
-            />
-          </div>
-
-          <div className={styles.formGroup}>
-            <label htmlFor="address">כתובת העסק:</label>
-            <input
-              type="text"
-              id="address"
-              name="address"
-              value={formData.address}
-              onChange={handleInputChange}
-              className={styles.input}
-            />
+            >
+              <option value="">בחר סוג עסק</option>
+              {businessTypes.map((type, index) => (
+                <option key={index} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className={styles.formGroup}>
@@ -181,48 +168,12 @@ export default function MyBusiness() {
           </div>
 
           <div className={styles.formGroup}>
-            <label htmlFor="email">אימייל העסק:</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              className={styles.input}
-            />
-          </div>
-
-          <div className={styles.formGroup}>
             <label htmlFor="city">עיר:</label>
             <input
               type="text"
               id="city"
               name="city"
               value={formData.city}
-              onChange={handleInputChange}
-              className={styles.input}
-            />
-          </div>
-
-          <div className={styles.formGroup}>
-            <label htmlFor="zip">מיקוד:</label>
-            <input
-              type="text"
-              id="zip"
-              name="zip"
-              value={formData.zip}
-              onChange={handleInputChange}
-              className={styles.input}
-            />
-          </div>
-
-          <div className={styles.formGroup}>
-            <label htmlFor="country">מדינה:</label>
-            <input
-              type="text"
-              id="country"
-              name="country"
-              value={formData.country}
               onChange={handleInputChange}
               className={styles.input}
             />
