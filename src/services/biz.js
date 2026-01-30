@@ -148,3 +148,23 @@ export async function updateBusinessByUserId(userId, updateData) {
     throw error;
   }
 }
+
+/**
+ * Delete a business by userId
+ * @param {string} userId - User's Firebase UID
+ * @returns {Promise<Object>} - Delete result
+ */
+export async function deleteBusinessByUserId(userId) {
+  try {
+    const client = await clientPromise;
+    const db = client.db(DB_NAME);
+    const collection = db.collection(COLLECTION_NAME);
+    
+    const result = await collection.deleteOne({ userId: userId });
+    
+    return result;
+  } catch (error) {
+    console.error('Error deleting business:', error);
+    throw error;
+  }
+}

@@ -12,6 +12,7 @@ import styles from "./page.module.css";
 export default function MyBusiness() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [business, setBusiness] = useState(null);
   const [formData, setFormData] = useState({
     title: '',
@@ -103,6 +104,43 @@ export default function MyBusiness() {
     }
   };
 
+  const handleDelete = async () => {
+    if (!business) return;
+
+    const confirmed = window.confirm('האם אתה בטוח שברצונך למחוק את העסק? פעולה זו לא ניתנת לביטול.');
+    
+    if (!confirmed) return;
+
+    setDeleting(true);
+
+    try {
+      const response = await fetch(`/api/biz/my-business?userId=${user.uid}`, {
+        method: 'DELETE',
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        alert('העסק נמחק בהצלחה!');
+        setBusiness(null);
+        setFormData({
+          title: '',
+          type: '',
+          phone: '',
+          city: '',
+        });
+        router.push('/dashboard');
+      } else {
+        alert('שגיאה במחיקת העסק');
+      }
+    } catch (error) {
+      console.error('Error deleting business:', error);
+      alert('שגיאה במחיקת העסק');
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className={styles.page}>
@@ -179,9 +217,21 @@ export default function MyBusiness() {
             />
           </div>
 
-          <button type="submit" disabled={saving} className={styles.submitButton}>
-            {saving ? 'שומר...' : 'שמור'}
-          </button>
+          <div className={styles.buttonsContainer}>
+            <button type="submit" disabled={saving} className={styles.submitButton}>
+              {saving ? 'שומר...' : 'שמור'}
+            </button>
+            {business && (
+              <button 
+                type="button" 
+                onClick={handleDelete} 
+                disabled={deleting} 
+                className={styles.deleteButton}
+              >
+                {deleting ? 'מוחק...' : 'מחק עסק'}
+              </button>
+            )}
+          </div>
         </form>
       </main>
     </div>

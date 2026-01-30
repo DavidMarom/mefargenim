@@ -1,0 +1,87 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: transparent;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  gap: 2rem;
+  margin-top: 80px;
+  flex: 1;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+.main h1 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  text-align: right;
+  color: #171717;
+  margin: 0;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.content section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.content h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #171717;
+  text-align: right;
+  margin: 0;
+}
+
+.content p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #333333;
+  text-align: right;
+  margin: 0;
+}
+
+.backLink {
+  margin-top: 2rem;
+  text-align: right;
+}
+
+.backLink a {
+  color: #4285f4;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: color 0.2s;
+}
+
+.backLink a:hover {
+  color: #357ae8;
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 1rem;
+    margin-top: 0;
+  }
+
+  .main h1 {
+    font-size: 2rem;
+  }
+
+  .content h2 {
+    font-size: 1.25rem;
+  }
+}

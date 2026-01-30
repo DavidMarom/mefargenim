@@ -66,7 +66,7 @@ export default function Home() {
     <div className={styles.page}>
       <main className={styles.main}>
         <h1>
-          <span>מפרגנים</span>
+          <span>מפרגנים ❤️</span>
         </h1>
         <GoogleLoginButton />
         {!loadingBusinesses && recentBusinesses.length > 0 && (
