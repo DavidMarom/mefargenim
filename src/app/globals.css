@@ -1,7 +1,18 @@
+@font-face {
+  font-family: 'LogoFont';
+  src: url('/fonts/logo-font.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-logo: 'LogoFont', Arial, Helvetica, sans-serif;
 }
+
+
 
 html,
 body {
@@ -12,7 +23,7 @@ body {
 body {
   color: #171717;
   background: #ffffff;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-varela-round), Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   direction: rtl;
@@ -33,3 +44,4 @@ a {
 html {
   color-scheme: light;
 }
+
