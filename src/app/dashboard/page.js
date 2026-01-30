@@ -15,6 +15,7 @@ export default function Dashboard() {
   const [bizDocuments, setBizDocuments] = useState([]);
   const [loadingBiz, setLoadingBiz] = useState(true);
   const [selectedType, setSelectedType] = useState("all");
+  const [selectedCity, setSelectedCity] = useState("all");
   const router = useRouter();
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
@@ -75,10 +76,18 @@ export default function Dashboard() {
     return null;
   }
 
-  // Filter businesses by type
-  const filteredDocuments = selectedType === "all" 
-    ? bizDocuments 
-    : bizDocuments.filter(doc => doc.type === selectedType);
+  // Get unique cities from businesses
+  const uniqueCities = [...new Set(bizDocuments
+    .map(doc => doc.city)
+    .filter(city => city && city.trim() !== '')
+  )].sort();
+
+  // Filter businesses by type and city
+  const filteredDocuments = bizDocuments.filter(doc => {
+    const typeMatch = selectedType === "all" || doc.type === selectedType;
+    const cityMatch = selectedCity === "all" || doc.city === selectedCity;
+    return typeMatch && cityMatch;
+  });
 
   return (
     <div className={styles.page}>
@@ -86,23 +95,43 @@ export default function Dashboard() {
       <main className={styles.main}>
         <div className={styles.headerSection}>
           <h1>עסקים:</h1>
-          <div className={styles.filterSection}>
-            <label htmlFor="typeFilter" className={styles.filterLabel}>
-              סוג עסק:
-            </label>
-            <select
-              id="typeFilter"
-              value={selectedType}
-              onChange={(e) => setSelectedType(e.target.value)}
-              className={styles.filterSelect}
-            >
-              <option value="all">כל הסוגים</option>
-              {businessTypes.map((type, index) => (
-                <option key={index} value={type}>
-                  {type}
-                </option>
-              ))}
-            </select>
+          <div className={styles.filtersContainer}>
+            <div className={styles.filterSection}>
+              <label htmlFor="typeFilter" className={styles.filterLabel}>
+                סוג עסק:
+              </label>
+              <select
+                id="typeFilter"
+                value={selectedType}
+                onChange={(e) => setSelectedType(e.target.value)}
+                className={styles.filterSelect}
+              >
+                <option value="all">כל הסוגים</option>
+                {businessTypes.map((type, index) => (
+                  <option key={index} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className={styles.filterSection}>
+              <label htmlFor="cityFilter" className={styles.filterLabel}>
+                עיר:
+              </label>
+              <select
+                id="cityFilter"
+                value={selectedCity}
+                onChange={(e) => setSelectedCity(e.target.value)}
+                className={styles.filterSelect}
+              >
+                <option value="all">כל הערים</option>
+                {uniqueCities.map((city, index) => (
+                  <option key={index} value={city}>
+                    {city}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
         {loadingBiz ? (
