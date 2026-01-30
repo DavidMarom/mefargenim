@@ -53,7 +53,9 @@ export default function Navbar() {
           </Link>
         </div>
         <div className={styles.logo}>
-          <h2>מפרגנים</h2>
+          <Link href="/dashboard">
+            <h2>מפרגנים</h2>
+          </Link>
         </div>
       </div>
     </nav>

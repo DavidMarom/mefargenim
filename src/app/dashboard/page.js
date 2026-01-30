@@ -7,12 +7,14 @@ import { auth } from "../../services/fb";
 import { useUserStore } from "@/store/userStore";
 import Navbar from "../../components/Navbar/Navbar";
 import BizCard from "../../components/BizCard/BizCard";
+import { businessTypes } from "../../data/businessTypes";
 import styles from "./page.module.css";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [bizDocuments, setBizDocuments] = useState([]);
   const [loadingBiz, setLoadingBiz] = useState(true);
+  const [selectedType, setSelectedType] = useState("all");
   const router = useRouter();
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
@@ -73,18 +75,43 @@ export default function Dashboard() {
     return null;
   }
 
+  // Filter businesses by type
+  const filteredDocuments = selectedType === "all" 
+    ? bizDocuments 
+    : bizDocuments.filter(doc => doc.type === selectedType);
+
   return (
     <div className={styles.page}>
       <Navbar />
       <main className={styles.main}>
-        <h1>עסקים:</h1>
+        <div className={styles.headerSection}>
+          <h1>עסקים:</h1>
+          <div className={styles.filterSection}>
+            <label htmlFor="typeFilter" className={styles.filterLabel}>
+              סוג עסק:
+            </label>
+            <select
+              id="typeFilter"
+              value={selectedType}
+              onChange={(e) => setSelectedType(e.target.value)}
+              className={styles.filterSelect}
+            >
+              <option value="all">כל הסוגים</option>
+              {businessTypes.map((type, index) => (
+                <option key={index} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
         {loadingBiz ? (
           <p>טוען מסמכים...</p>
-        ) : bizDocuments.length === 0 ? (
+        ) : filteredDocuments.length === 0 ? (
           <p className={styles.noDocuments}>אין מסמכים להצגה</p>
         ) : (
           <div className={styles.cardsGrid}>
-            {bizDocuments.map((doc, index) => (
+            {filteredDocuments.map((doc, index) => (
               <BizCard key={doc._id?.toString() || index} document={doc} />
             ))}
           </div>

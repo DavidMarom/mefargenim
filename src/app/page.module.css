@@ -12,6 +12,9 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
+  max-width: 1400px;
+  width: 100%;
+  gap: 2rem;
 }
 
 .main h1 {
@@ -19,4 +22,51 @@
   font-weight: 600;
   color: #171717;
   text-align: right;
+  margin: 0;
+}
+
+.main h1 span {
+  font-family: var(--font-logo);
+}
+
+.recentSection {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.recentTitle {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #171717;
+  text-align: right;
+  margin: 0;
+}
+
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 1rem;
+  }
+
+  .cardsGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .main h1 {
+    font-size: 2rem;
+  }
+
+  .recentTitle {
+    font-size: 1.5rem;
+  }
 }

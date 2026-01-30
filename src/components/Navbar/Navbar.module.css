@@ -19,11 +19,22 @@
   gap: 1rem;
 }
 
+.logo a {
+  text-decoration: none;
+  cursor: pointer;
+}
+
 .logo h2 {
   margin: 0;
   font-size: 1.5rem;
   font-weight: 600;
   color: #171717;
+  font-family: var(--font-logo);
+  transition: color 0.2s;
+}
+
+.logo a:hover h2 {
+  color: #4285f4;
 }
 
 .userSection {
