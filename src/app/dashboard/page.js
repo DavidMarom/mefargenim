@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../services/fb";
-import { useUserStore } from "../../store/userStore";
-import Navbar from "../../components/Navbar";
-import BizCard from "../../components/BizCard";
+import { useUserStore } from "@/store/userStore";
+import Navbar from "../../components/Navbar/Navbar";
+import BizCard from "../../components/BizCard/BizCard";
 import styles from "./page.module.css";
 
 export default function Dashboard() {

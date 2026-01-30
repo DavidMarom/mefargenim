@@ -57,6 +57,54 @@
   white-space: pre-wrap;
 }
 
+.likeSection {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f0f0f0;
+  justify-content: flex-end;
+}
+
+.likeButton {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #171717;
+  background-color: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.likeButton:hover:not(:disabled) {
+  background-color: #e8e8e8;
+  border-color: #4285f4;
+}
+
+.likeButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.likeButton.liked {
+  background-color: #4285f4;
+  color: #fff;
+  border-color: #4285f4;
+}
+
+.likeButton.liked:hover {
+  background-color: #357ae8;
+}
+
+.likeCount {
+  font-size: 0.875rem;
+  color: #666;
+  font-weight: 500;
+}
+
 @media (max-width: 600px) {
   .card {
     min-width: 100%;

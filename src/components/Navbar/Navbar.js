@@ -1,10 +1,11 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
 import { signOut } from "firebase/auth";
-import { auth } from "../services/fb";
-import { useUserStore } from "../store/userStore";
+import { useRouter } from "next/navigation";
+import { auth } from "../../services/fb";
+import { useUserStore } from "../../store/userStore";
 import styles from "./Navbar.module.css";
 
 export default function Navbar() {
@@ -29,16 +30,7 @@ export default function Navbar() {
   return (
     <nav className={styles.navbar}>
       <div className={styles.navbarContent}>
-        <div className={styles.logo}>
-          <h2>מפרגנים</h2>
-        </div>
         <div className={styles.userSection}>
-          <button 
-            onClick={() => router.push('/my-business')} 
-            className={styles.businessButton}
-          >
-            העסק שלי
-          </button>
           {user.photoURL && (
             <Image
               src={user.photoURL}
@@ -51,6 +43,14 @@ export default function Navbar() {
           <button onClick={handleLogout} className={styles.logoutButton}>
             התנתק
           </button>
+        </div>
+        <div className={styles.centerLink}>
+          <Link href="/my-business" className={styles.businessLink}>
+            העסק שלי
+          </Link>
+        </div>
+        <div className={styles.logo}>
+          <h2>מפרגנים</h2>
         </div>
       </div>
     </nav>
