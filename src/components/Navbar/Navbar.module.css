@@ -10,9 +10,9 @@
 }
 
 .navbarContent {
-  max-width: 1200px;
+  max-width: 1350px;
   margin: 0 auto;
-  padding: 1rem 2rem;
+  padding: 1rem 0rem;
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
