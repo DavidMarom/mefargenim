@@ -33,13 +33,14 @@
   justify-content: flex-start;
 }
 
-.centerLink {
+.centerLinks {
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 1.5rem;
 }
 
-.businessLink {
+.navLink {
   color: #171717;
   text-decoration: none;
   font-size: 1rem;
@@ -47,7 +48,7 @@
   transition: color 0.2s;
 }
 
-.businessLink:hover {
+.navLink:hover {
   color: #4285f4;
 }
 
