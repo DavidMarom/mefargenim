@@ -17,7 +17,7 @@ export default function BusinessDetail() {
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
   const clearUser = useUserStore((state) => state.clearUser);
-  
+
   // Use React Query to fetch business
   const { data: business, isLoading: loadingBusiness, error } = useBusiness(params?.id);
 
@@ -39,15 +39,15 @@ export default function BusinessDetail() {
     if (!params?.id) return;
 
     const url = `${window.location.origin}/business/${params.id}`;
-    
+
     try {
       // Copy URL to clipboard
       await navigator.clipboard.writeText(url);
       setCopied(true);
-      
+
       // Reset copied state after 2 seconds
       setTimeout(() => setCopied(false), 2000);
-      
+
       // Open WhatsApp web with the URL
       const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(url)}`;
       window.open(whatsappUrl, '_blank');
@@ -127,18 +127,18 @@ export default function BusinessDetail() {
 
   // Only show title, type, phone, and city
   const allowedFields = ['title', 'type', 'phone', 'city'];
-  const entries = Object.entries(business).filter(([key]) => 
+  const entries = Object.entries(business).filter(([key]) =>
     allowedFields.includes(key)
   );
-  
+
   // Sort entries to ensure correct order: title, type, phone, city
   entries.sort(([keyA], [keyB]) => {
     const order = ['title', 'type', 'phone', 'city'];
     return order.indexOf(keyA) - order.indexOf(keyB);
   });
 
-  const businessUrl = typeof window !== 'undefined' 
-    ? `${window.location.origin}/business/${params.id}` 
+  const businessUrl = typeof window !== 'undefined'
+    ? `${window.location.origin}/business/${params.id}`
     : '';
 
   return (
@@ -166,43 +166,38 @@ export default function BusinessDetail() {
         <Navbar />
         <main className={styles.main}>
           <h1>{business.title || 'פרטי העסק'}</h1>
-        <div className={styles.businessDetails}>
-          {entries.map(([key, value]) => {
-            // Format the value for display
-            let displayValue = value;
-            if (value === null || value === undefined) {
-              displayValue = 'לא זמין';
-            } else if (typeof value === 'object') {
-              displayValue = JSON.stringify(value, null, 2);
-            } else if (value instanceof Date) {
-              displayValue = value.toLocaleDateString('he-IL');
-            } else {
-              displayValue = String(value);
-            }
+          <div className={styles.businessDetails}>
+            {entries.map(([key, value]) => {
+              // Format the value for display
+              let displayValue = value;
+              if (value === null || value === undefined) {
+                displayValue = 'לא זמין';
+              } else if (typeof value === 'object') {
+                displayValue = JSON.stringify(value, null, 2);
+              } else if (value instanceof Date) {
+                displayValue = value.toLocaleDateString('he-IL');
+              } else {
+                displayValue = String(value);
+              }
 
-            return (
-              <div key={key} className={styles.detailField}>
-                <span className={styles.label}>{getDisplayLabel(key)}:</span>
-                <span className={styles.value}>{displayValue}</span>
-              </div>
-            );
-          })}
-        </div>
-        <div className={styles.actions}>
-          <button 
-            onClick={handleShare}
-            className={styles.shareButton}
-          >
-            {copied ? '✓ הועתק!' : 'שתף'}
-          </button>
-          <button 
-            onClick={() => router.push('/dashboard')} 
-            className={styles.backButton}
-          >
-            חזור
-          </button>
-        </div>
-      </main>
-    </div>
+              return (
+                <div key={key} className={styles.detailField}>
+                  <span className={styles.label}>{getDisplayLabel(key)}:</span>
+                  <span className={styles.value}>{displayValue}</span>
+                </div>
+              );
+            })}
+          </div>
+          <div className={styles.actions}>
+            <button onClick={handleShare} className={styles.shareButton}>
+              {copied ? '✓ הועתק!' : 'שתף'}
+            </button>
+            <button onClick={() => router.push('/dashboard')} className={styles.backButton}>
+              חזור
+            </button>
+          </div>
+        </main>
+      </div>
+    </>
   );
 }
