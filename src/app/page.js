@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
+import Image from "next/image";
 import { auth } from "../services/fb";
 import { useUserStore } from "../store/userStore";
 import BizCard from "../components/BizCard/BizCard";
@@ -65,9 +66,17 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        <h1>
-          <span>מפרגנים ❤️</span>
-        </h1>
+        <div className={styles.logoContainer}>
+          <Image
+            src="/mlogo.png"
+            alt="מפרגנים"
+            width={200}
+            height={200}
+            className={styles.logo}
+            priority
+          />
+        </div>
+        
         <GoogleLoginButton />
         {!loadingBusinesses && recentBusinesses.length > 0 && (
           <div className={styles.recentSection}>
