@@ -1,12 +1,13 @@
 // Business types list - Edit this file to modify the available business types
 export const businessTypes = [
-  'מסעדה',
-  'חנות',
+  'ימי הולדת',
   'שירותים',
-  'אחר',
   'לק ג׳ל',
   'עיצוב שיער',
   'ספר גברים',
   'קוסמטיקאית',
   'מסג׳יסט/ית',
+  'מסעדה',
+  'חנות',
+  'אחר',
 ];
