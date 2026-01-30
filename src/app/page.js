@@ -63,32 +63,57 @@ export default function Home() {
     );
   }
 
+  const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <div className={styles.logoContainer}>
-          <Image
-            src="/mlogo.png"
-            alt="מפרגנים"
-            width={200}
-            height={200}
-            className={styles.logo}
-            priority
-          />
-        </div>
-        
-        <GoogleLoginButton />
-        {!loadingBusinesses && recentBusinesses.length > 0 && (
-          <div className={styles.recentSection}>
-            <h2 className={styles.recentTitle}>העסקים החדשים ביותר</h2>
-            <div className={styles.cardsGrid}>
-              {recentBusinesses.map((doc, index) => (
-                <BizCard key={doc._id?.toString() || index} document={doc} />
-              ))}
-            </div>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "מפרגנים",
+            "description": "פלטפורמה לעסקים מקומיים",
+            "url": baseUrl,
+            "inLanguage": "he-IL",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": `${baseUrl}/dashboard`
+              },
+              "query-input": "required name=search_term_string"
+            }
+          })
+        }}
+      />
+      <div className={styles.page}>
+        <main className={styles.main}>
+          <div className={styles.logoContainer}>
+            <Image
+              src="/mlogo.png"
+              alt="מפרגנים - פלטפורמה לעסקים מקומיים"
+              width={200}
+              height={200}
+              className={styles.logo}
+              priority
+            />
           </div>
-        )}
-      </main>
-    </div>
+          
+          <GoogleLoginButton />
+          {!loadingBusinesses && recentBusinesses.length > 0 && (
+            <div className={styles.recentSection}>
+              <h2 className={styles.recentTitle}>העסקים החדשים ביותר</h2>
+              <div className={styles.cardsGrid}>
+                {recentBusinesses.map((doc, index) => (
+                  <BizCard key={doc._id?.toString() || index} document={doc} />
+                ))}
+              </div>
+            </div>
+          )}
+        </main>
+      </div>
+    </>
   );
 }

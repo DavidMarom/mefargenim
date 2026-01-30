@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "../../services/fb";
-import { useUserStore } from "@/store/userStore";
+import { useUserStore } from "../../store/userStore";
 import styles from "./BizCard.module.css";
 
 export default function BizCard({ document }) {

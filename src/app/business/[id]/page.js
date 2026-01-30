@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../../services/fb";
-import { useUserStore } from "@/store/userStore";
+import { useUserStore } from "../../../store/userStore";
 import Navbar from "../../../components/Navbar/Navbar";
 import styles from "./page.module.css";
 
@@ -147,11 +147,35 @@ export default function BusinessDetail() {
     return order.indexOf(keyA) - order.indexOf(keyB);
   });
 
+  const businessUrl = typeof window !== 'undefined' 
+    ? `${window.location.origin}/business/${params.id}` 
+    : '';
+
   return (
-    <div className={styles.page}>
-      <Navbar />
-      <main className={styles.main}>
-        <h1>{business.title || 'פרטי העסק'}</h1>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "LocalBusiness",
+            "name": business.title || "עסק",
+            "description": `${business.type || ""} ${business.city ? `ב${business.city}` : ""}`,
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": business.city || "",
+              "addressCountry": "IL"
+            },
+            "telephone": business.phone || "",
+            "url": businessUrl,
+            ...(business.type && { "category": business.type })
+          })
+        }}
+      />
+      <div className={styles.page}>
+        <Navbar />
+        <main className={styles.main}>
+          <h1>{business.title || 'פרטי העסק'}</h1>
         <div className={styles.businessDetails}>
           {entries.map(([key, value]) => {
             // Format the value for display
