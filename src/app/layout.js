@@ -1,6 +1,11 @@
-// import { Geist, Geist_Mono } from "next/font/google";
+import { Varela_Round } from "next/font/google";
 import "./globals.css";
 
+const varelaRound = Varela_Round({
+  weight: "400",
+  subsets: ["latin", "hebrew"],
+  variable: "--font-varela-round",
+});
 
 export const metadata = {
   title: "מפרגנים",
@@ -10,7 +15,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="he" dir="rtl">
-      <body>
+      <body className={varelaRound.variable}>
         {children}
       </body>
     </html>
