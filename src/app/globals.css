@@ -22,7 +22,8 @@ body {
 
 body {
   color: #171717;
-  background: #ffffff;
+  background: linear-gradient(135deg, #f3edf7 0%, #ccd8e6 100%);
+  min-height: 100vh;
   font-family: var(--font-varela-round), Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

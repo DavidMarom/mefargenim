@@ -1,5 +1,6 @@
 import { Varela_Round } from "next/font/google";
 import "./globals.css";
+import Footer from "../components/Footer/Footer";
 
 const varelaRound = Varela_Round({
   weight: "400",
@@ -31,7 +32,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="he" dir="rtl">
       <body className={varelaRound.variable}>
-        {children}
+        <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+          <div style={{ flex: '1 0 auto' }}>
+            {children}
+          </div>
+          <Footer />
+        </div>
       </body>
     </html>
   );

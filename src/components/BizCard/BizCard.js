@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { auth } from "../../services/fb";
 import { useUserStore } from "@/store/userStore";
 import styles from "./BizCard.module.css";
 
@@ -63,6 +65,72 @@ export default function BizCard({ document }) {
       console.error('Error toggling like:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      
+      // Save user information to Zustand store
+      const setUser = useUserStore.getState().setUser;
+      setUser(result.user);
+      
+      // Check if user exists in MongoDB, create if doesn't exist
+      if (result.user?.email) {
+        try {
+          const userData = {
+            uid: result.user.uid,
+            email: result.user.email,
+            displayName: result.user.displayName,
+            photoURL: result.user.photoURL,
+            emailVerified: result.user.emailVerified,
+            phoneNumber: result.user.phoneNumber,
+            providerData: result.user.providerData,
+            metadata: {
+              creationTime: result.user.metadata?.creationTime,
+              lastSignInTime: result.user.metadata?.lastSignInTime,
+            },
+          };
+
+          const response = await fetch('/api/users/check', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+              email: result.user.email,
+              userData: userData 
+            }),
+          });
+          
+          const data = await response.json();
+          if (data.created) {
+            console.log('New user created in database');
+          } else if (data.exists) {
+            console.log('User already exists in database');
+          }
+        } catch (dbError) {
+          console.error('Error checking/creating user in database:', dbError);
+          // Don't block login if database operation fails
+        }
+      }
+      
+      // After successful login, redirect to the business detail page
+      router.push(`/business/${document._id?.toString() || document._id}`);
+    } catch (err) {
+      console.error("Login error:", err);
+    }
+  };
+
+  const handleOpen = () => {
+    if (!user) {
+      // If user is not logged in, trigger Google login
+      handleGoogleLogin();
+    } else {
+      // If user is logged in, navigate to business detail page
+      router.push(`/business/${document._id?.toString() || document._id}`);
     }
   };
   // Function to get display label for field names
@@ -154,7 +222,7 @@ export default function BizCard({ document }) {
           )}
         </div>
         <button
-          onClick={() => router.push(`/business/${document._id?.toString() || document._id}`)}
+          onClick={handleOpen}
           className={styles.openButton}
         >
           פתח
