@@ -121,6 +121,36 @@ export async function createBusiness(userId, businessData) {
 }
 
 /**
+ * Create a new business without userId (for admin use)
+ * MongoDB will automatically generate the _id
+ * @param {Object} businessData - Business data to save
+ * @returns {Promise<Object>} - Created business document
+ */
+export async function createBusinessAdmin(businessData) {
+  try {
+    const client = await clientPromise;
+    const db = client.db(DB_NAME);
+    const collection = db.collection(COLLECTION_NAME);
+    
+    const businessDocument = {
+      ...businessData,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    
+    const result = await collection.insertOne(businessDocument);
+    
+    return {
+      ...businessDocument,
+      _id: result.insertedId,
+    };
+  } catch (error) {
+    console.error('Error creating business (admin):', error);
+    throw error;
+  }
+}
+
+/**
  * Update a business by userId
  * @param {string} userId - User's Firebase UID
  * @param {Object} updateData - Data to update
