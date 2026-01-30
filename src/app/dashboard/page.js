@@ -16,6 +16,7 @@ export default function Dashboard() {
   const [loadingBiz, setLoadingBiz] = useState(true);
   const [selectedType, setSelectedType] = useState("all");
   const [selectedCity, setSelectedCity] = useState("all");
+  const [copied, setCopied] = useState(false);
   const router = useRouter();
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
@@ -58,6 +59,28 @@ export default function Dashboard() {
       console.error('Error fetching Biz documents:', error);
     } finally {
       setLoadingBiz(false);
+    }
+  };
+
+  const handleShare = async () => {
+    const url = window.location.origin;
+    
+    try {
+      // Copy URL to clipboard
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      
+      // Reset copied state after 2 seconds
+      setTimeout(() => setCopied(false), 2000);
+      
+      // Open WhatsApp web with the URL
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(url)}`;
+      window.open(whatsappUrl, '_blank');
+    } catch (error) {
+      console.error('Error sharing:', error);
+      // Fallback: try to open WhatsApp directly
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(url)}`;
+      window.open(whatsappUrl, '_blank');
     }
   };
 
@@ -137,7 +160,15 @@ export default function Dashboard() {
         {loadingBiz ? (
           <p>טוען מסמכים...</p>
         ) : filteredDocuments.length === 0 ? (
-          <p className={styles.noDocuments}>אין לנו כאלה... שלח לבעלי עסקים והם יוכלו להיות הראשונים במערכת!</p>
+          <div className={styles.noResultsContainer}>
+            <p className={styles.noDocuments}>אין לנו כאלה... שלח לבעלי עסקים והם יוכלו להיות הראשונים במערכת!</p>
+            <button 
+              onClick={handleShare}
+              className={styles.shareButton}
+            >
+              {copied ? '✓ הועתק!' : 'שתף את האתר'}
+            </button>
+          </div>
         ) : (
           <div className={styles.cardsGrid}>
             {filteredDocuments.map((doc, index) => (

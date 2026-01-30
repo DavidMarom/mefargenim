@@ -287,6 +287,41 @@
   padding: 2rem;
 }
 
+.passwordContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+}
+
+.passwordContainer h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #171717;
+  margin: 0 0 2rem 0;
+}
+
+.passwordForm {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.errorMessage {
+  color: #d32f2f;
+  font-size: 0.875rem;
+  margin: 0.5rem 0 0 0;
+  text-align: right;
+}
+
 @media (max-width: 768px) {
   .main {
     padding: 1rem;

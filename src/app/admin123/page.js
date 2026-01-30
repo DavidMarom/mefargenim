@@ -9,8 +9,13 @@ import Navbar from "../../components/Navbar/Navbar";
 import { businessTypes } from "../../data/businessTypes";
 import styles from "./page.module.css";
 
+const ADMIN_PASSWORD = 'azsx';
+
 export default function AdminPanel() {
   const [loading, setLoading] = useState(true);
+  const [isPasswordAuthenticated, setIsPasswordAuthenticated] = useState(false);
+  const [passwordInput, setPasswordInput] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const [bizDocuments, setBizDocuments] = useState([]);
   const [loadingBiz, setLoadingBiz] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -60,6 +65,17 @@ export default function AdminPanel() {
       console.error('Error fetching Biz documents:', error);
     } finally {
       setLoadingBiz(false);
+    }
+  };
+
+  const handlePasswordSubmit = (e) => {
+    e.preventDefault();
+    if (passwordInput === ADMIN_PASSWORD) {
+      setIsPasswordAuthenticated(true);
+      setPasswordError('');
+    } else {
+      setPasswordError('סיסמה שגויה. נסה שוב.');
+      setPasswordInput('');
     }
   };
 
@@ -120,6 +136,44 @@ export default function AdminPanel() {
         <Navbar />
         <main className={styles.main}>
           <p>טוען...</p>
+        </main>
+      </div>
+    );
+  }
+
+  // Password protection - show password form if not authenticated
+  if (!isPasswordAuthenticated) {
+    return (
+      <div className={styles.page}>
+        <Navbar />
+        <main className={styles.main}>
+          <div className={styles.passwordContainer}>
+            <h2>פאנל ניהול - נדרשת סיסמה</h2>
+            <form onSubmit={handlePasswordSubmit} className={styles.passwordForm}>
+              <div className={styles.formGroup}>
+                <label htmlFor="password">הכנס סיסמה:</label>
+                <input
+                  type="password"
+                  id="password"
+                  value={passwordInput}
+                  onChange={(e) => {
+                    setPasswordInput(e.target.value);
+                    setPasswordError('');
+                  }}
+                  className={styles.input}
+                  placeholder="הכנס סיסמה"
+                  required
+                  autoFocus
+                />
+                {passwordError && (
+                  <p className={styles.errorMessage}>{passwordError}</p>
+                )}
+              </div>
+              <button type="submit" className={styles.submitButton}>
+                התחבר
+              </button>
+            </form>
+          </div>
         </main>
       </div>
     );

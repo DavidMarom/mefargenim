@@ -141,9 +141,6 @@ export default function BizCard({ document }) {
     if (key === 'type') {
       return 'סוג העסק';
     }
-    if (key === 'address') {
-      return 'כתובת העסק';
-    }
     if (key === 'phone') {
       return 'טלפון';
     }
@@ -152,12 +149,6 @@ export default function BizCard({ document }) {
     }
     if (key === 'city') {
       return 'עיר';
-    }
-    if (key === 'zip') {
-      return 'מיקוד';
-    }
-    if (key === 'country') {
-      return 'מדינה';
     }
     return key;
   };
@@ -214,8 +205,11 @@ export default function BizCard({ document }) {
             onClick={handleLike}
             disabled={liked || loading || !user}
             className={`${styles.likeButton} ${liked ? styles.liked : ''}`}
+            aria-label={liked ? 'אהבתי' : 'אהב'}
           >
-            {liked ? '✓ אהבתי' : 'אהבתי'}
+            <span className={styles.heartIcon}>
+              {liked ? '❤️' : '🤍'}
+            </span>
           </button>
           {likeCount > 0 && (
             <span className={styles.likeCount}>{likeCount}</span>
