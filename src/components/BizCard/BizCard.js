@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/userStore";
 import styles from "./BizCard.module.css";
 
@@ -8,6 +9,7 @@ export default function BizCard({ document }) {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const user = useUserStore((state) => state.user);
 
   useEffect(() => {
@@ -138,17 +140,25 @@ export default function BizCard({ document }) {
           );
         })}
       </div>
-      <div className={styles.likeSection}>
+      <div className={styles.actionsSection}>
+        <div className={styles.likeSection}>
+          <button
+            onClick={handleLike}
+            disabled={liked || loading || !user}
+            className={`${styles.likeButton} ${liked ? styles.liked : ''}`}
+          >
+            {liked ? '✓ אהבתי' : 'אהבתי'}
+          </button>
+          {likeCount > 0 && (
+            <span className={styles.likeCount}>{likeCount}</span>
+          )}
+        </div>
         <button
-          onClick={handleLike}
-          disabled={liked || loading || !user}
-          className={`${styles.likeButton} ${liked ? styles.liked : ''}`}
+          onClick={() => router.push(`/business/${document._id?.toString() || document._id}`)}
+          className={styles.openButton}
         >
-          {liked ? '✓ אהבתי' : 'אהבתי'}
+          פתח
         </button>
-        {likeCount > 0 && (
-          <span className={styles.likeCount}>{likeCount}</span>
-        )}
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import clientPromise from './mongo';
 
 const DB_NAME = 'main';
@@ -17,6 +18,30 @@ export async function getAllBizDocuments() {
     return documents;
   } catch (error) {
     console.error('Error fetching Biz documents:', error);
+    throw error;
+  }
+}
+
+/**
+ * Get a business by MongoDB _id
+ * @param {string} businessId - Business MongoDB _id
+ * @returns {Promise<Object|null>} - Business document if found, null otherwise
+ */
+export async function getBusinessById(businessId) {
+  try {
+    const client = await clientPromise;
+    const db = client.db(DB_NAME);
+    const collection = db.collection(COLLECTION_NAME);
+    
+    // Validate ObjectId format
+    if (!ObjectId.isValid(businessId)) {
+      throw new Error('Invalid business ID format');
+    }
+    
+    const business = await collection.findOne({ _id: new ObjectId(businessId) });
+    return business;
+  } catch (error) {
+    console.error('Error fetching business by id:', error);
     throw error;
   }
 }
