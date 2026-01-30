@@ -32,8 +32,17 @@ export default function BizCard({ document }) {
     return key;
   };
 
-  // Filter out _id and get entries
-  const entries = Object.entries(document).filter(([key]) => key !== '_id');
+  // Only show title, type, phone, and city
+  const allowedFields = ['title', 'type', 'phone', 'city'];
+  const entries = Object.entries(document).filter(([key]) => 
+    allowedFields.includes(key)
+  );
+  
+  // Sort entries to ensure title is first, then type, phone, city
+  entries.sort(([keyA], [keyB]) => {
+    const order = ['title', 'type', 'phone', 'city'];
+    return order.indexOf(keyA) - order.indexOf(keyB);
+  });
 
   return (
     <div className={styles.card}>
