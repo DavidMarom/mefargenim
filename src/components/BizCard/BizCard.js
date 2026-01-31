@@ -5,36 +5,35 @@ import { useRouter } from "next/navigation";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "../../services/fb";
 import { useUserStore } from "../../store/userStore";
+import useLikesStore from "../../store/likesStore";
 import styles from "./BizCard.module.css";
 
 export default function BizCard({ document }) {
-  const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const user = useUserStore((state) => state.user);
+  
+  // Get likes from store
+  const {
+    getLikeStatus,
+    fetchLikes,
+    updateLikeStatus,
+  } = useLikesStore();
+  
+  const businessId = document?._id?.toString() || document?._id;
+  const likeStatus = getLikeStatus(businessId);
+  const liked = likeStatus.liked;
+  const likeCount = likeStatus.count;
 
   useEffect(() => {
-    if (user?.uid && document?._id) {
-      fetchLikeStatus();
-    }
-  }, [user, document]);
-
-  const fetchLikeStatus = async () => {
-    try {
-      const response = await fetch(
-        `/api/likes?userId=${user.uid}&businessId=${document._id}`
-      );
-      const data = await response.json();
-
-      if (data.success) {
-        setLiked(data.liked);
-        setLikeCount(data.count || 0);
+    if (user?.uid && businessId) {
+      // Fetch all likes if needed (only if 1 hour has passed)
+      const needsFetch = useLikesStore.getState().shouldFetch();
+      if (needsFetch) {
+        fetchLikes(user.uid);
       }
-    } catch (error) {
-      console.error('Error fetching like status:', error);
     }
-  };
+  }, [user?.uid, businessId, fetchLikes]);
 
   const handleLike = async () => {
     if (!user?.uid || loading) return;
@@ -51,15 +50,15 @@ export default function BizCard({ document }) {
         },
         body: JSON.stringify({
           userId: user.uid,
-          businessId: document._id.toString(),
+          businessId: businessId,
         }),
       });
 
       const data = await response.json();
 
       if (data.success) {
-        setLiked(data.liked);
-        setLikeCount(data.count || 0);
+        // Update the store with new like status
+        updateLikeStatus(businessId, data.liked, data.count || 0);
       }
     } catch (error) {
       console.error('Error toggling like:', error);
