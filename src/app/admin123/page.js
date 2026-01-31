@@ -19,6 +19,8 @@ export default function AdminPanel() {
   const [bizDocuments, setBizDocuments] = useState([]);
   const [loadingBiz, setLoadingBiz] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [exportingUsers, setExportingUsers] = useState(false);
+  const [exportingBusinesses, setExportingBusinesses] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     type: '',
@@ -130,6 +132,78 @@ export default function AdminPanel() {
     }
   };
 
+  const handleExportUsers = async () => {
+    setExportingUsers(true);
+    try {
+      const response = await fetch('/api/users/export');
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to export users');
+      }
+
+      // Get the CSV content
+      const csv = await response.text();
+      
+      // Create a blob and download it
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      
+      link.setAttribute('href', url);
+      link.setAttribute('download', `users-export-${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Clean up the URL object
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error exporting users:', error);
+      alert(`שגיאה בייצוא המשתמשים: ${error.message}`);
+    } finally {
+      setExportingUsers(false);
+    }
+  };
+
+  const handleExportBusinesses = async () => {
+    setExportingBusinesses(true);
+    try {
+      const response = await fetch('/api/biz/export');
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to export businesses');
+      }
+
+      // Get the CSV content
+      const csv = await response.text();
+      
+      // Create a blob and download it
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      
+      link.setAttribute('href', url);
+      link.setAttribute('download', `businesses-export-${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Clean up the URL object
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error exporting businesses:', error);
+      alert(`שגיאה בייצוא העסקים: ${error.message}`);
+    } finally {
+      setExportingBusinesses(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className={styles.page}>
@@ -203,6 +277,23 @@ export default function AdminPanel() {
         <div className={styles.header}>
           <h1>פאנל ניהול</h1>
           <p className={styles.subtitle}>ניהול וסטטיסטיקות של המערכת</p>
+        </div>
+
+        <div className={styles.exportSection}>
+          <button
+            onClick={handleExportUsers}
+            disabled={exportingUsers}
+            className={styles.exportButton}
+          >
+            {exportingUsers ? 'מייצא...' : '📥 ייצא משתמשים ל-CSV'}
+          </button>
+          <button
+            onClick={handleExportBusinesses}
+            disabled={exportingBusinesses}
+            className={styles.exportButton}
+          >
+            {exportingBusinesses ? 'מייצא...' : '📥 ייצא עסקים ל-CSV'}
+          </button>
         </div>
 
         <div className={styles.statsGrid}>
