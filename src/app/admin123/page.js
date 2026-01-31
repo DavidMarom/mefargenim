@@ -21,6 +21,9 @@ export default function AdminPanel() {
   const [saving, setSaving] = useState(false);
   const [exportingUsers, setExportingUsers] = useState(false);
   const [exportingBusinesses, setExportingBusinesses] = useState(false);
+  const [uploadingCSV, setUploadingCSV] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploadMessage, setUploadMessage] = useState('');
   const [formData, setFormData] = useState({
     title: '',
     type: '',
@@ -204,6 +207,62 @@ export default function AdminPanel() {
     }
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (!file.name.endsWith('.csv')) {
+        alert('אנא בחר קובץ CSV בלבד');
+        setSelectedFile(null);
+        e.target.value = '';
+        return;
+      }
+      setSelectedFile(file);
+      setUploadMessage('');
+    }
+  };
+
+  const handleCSVUpload = async () => {
+    if (!selectedFile) {
+      alert('אנא בחר קובץ CSV להעלאה');
+      return;
+    }
+
+    setUploadingCSV(true);
+    setUploadMessage('');
+
+    try {
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+
+      const response = await fetch('/api/biz/import', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to import CSV');
+      }
+
+      // Success message
+      setUploadMessage(`✅ הועלו בהצלחה ${data.imported} עסקים${data.failed > 0 ? ` (${data.failed} נכשלו)` : ''}`);
+      
+      // Clear file input
+      setSelectedFile(null);
+      const fileInput = document.querySelector('input[type="file"]');
+      if (fileInput) fileInput.value = '';
+
+      // Refresh business list
+      fetchBizDocuments();
+    } catch (error) {
+      console.error('Error uploading CSV:', error);
+      setUploadMessage(`❌ שגיאה: ${error.message}`);
+    } finally {
+      setUploadingCSV(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className={styles.page}>
@@ -294,6 +353,33 @@ export default function AdminPanel() {
           >
             {exportingBusinesses ? 'מייצא...' : '📥 ייצא עסקים ל-CSV'}
           </button>
+        </div>
+
+        <div className={styles.importSection}>
+          <h3>ייבא עסקים מקובץ CSV</h3>
+          <p className={styles.importHint}>הקובץ צריך להכיל את העמודות: title, phone, city, type</p>
+          <div className={styles.importControls}>
+            <input
+              type="file"
+              accept=".csv"
+              onChange={handleFileChange}
+              className={styles.fileInput}
+              id="csvFileInput"
+            />
+            <label htmlFor="csvFileInput" className={styles.fileInputLabel}>
+              {selectedFile ? selectedFile.name : 'בחר קובץ CSV'}
+            </label>
+            <button
+              onClick={handleCSVUpload}
+              disabled={!selectedFile || uploadingCSV}
+              className={styles.importButton}
+            >
+              {uploadingCSV ? 'מייבא...' : '📤 ייבא עסקים'}
+            </button>
+          </div>
+          {uploadMessage && (
+            <p className={styles.uploadMessage}>{uploadMessage}</p>
+          )}
         </div>
 
         <div className={styles.statsGrid}>
