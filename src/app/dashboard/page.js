@@ -9,6 +9,7 @@ import Navbar from "../../components/Navbar/Navbar";
 import BizCard from "../../components/BizCard/BizCard";
 import { businessTypes } from "../../data/businessTypes";
 import { useBusinesses } from "../../hooks/useBusinesses";
+import { handleShare } from "./utils";
 import styles from "./page.module.css";
 
 export default function Dashboard() {
@@ -27,7 +28,6 @@ export default function Dashboard() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
-        // Update store with latest user data
         setUser(firebaseUser);
       } else {
         clearUser();
@@ -39,27 +39,7 @@ export default function Dashboard() {
     return () => unsubscribe();
   }, [router, setUser, clearUser]);
 
-  const handleShare = async () => {
-    const url = window.location.origin;
-    
-    try {
-      // Copy URL to clipboard
-      await navigator.clipboard.writeText(url);
-      setCopied(true);
-      
-      // Reset copied state after 2 seconds
-      setTimeout(() => setCopied(false), 2000);
-      
-      // Open WhatsApp web with the URL
-      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(url)}`;
-      window.open(whatsappUrl, '_blank');
-    } catch (error) {
-      console.error('Error sharing:', error);
-      // Fallback: try to open WhatsApp directly
-      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(url)}`;
-      window.open(whatsappUrl, '_blank');
-    }
-  };
+  const onShare = () => handleShare(setCopied);
 
   if (loading) {
     return (
@@ -142,7 +122,7 @@ export default function Dashboard() {
           <div className={styles.noResultsContainer}>
             <p className={styles.noDocuments}>אין לנו כאלה... שלח לבעלי עסקים והם יוכלו להיות הראשונים במערכת!</p>
             <button 
-              onClick={handleShare}
+              onClick={onShare}
               className={styles.shareButton}
             >
               {copied ? '✓ הועתק!' : 'שתף את האתר'}

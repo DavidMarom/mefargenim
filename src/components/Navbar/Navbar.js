@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { signOut } from "firebase/auth";
+import useLikesStore from "../../store/likesStore";
 import { useRouter } from "next/navigation";
 import { auth } from "../../services/fb";
 import { useUserStore } from "../../store/userStore";
@@ -12,11 +13,13 @@ export default function Navbar() {
   const router = useRouter();
   const user = useUserStore((state) => state.user);
   const clearUser = useUserStore((state) => state.clearUser);
+  const clearLikes = useLikesStore((state) => state.clearLikes);
 
   const handleLogout = async () => {
     try {
       await signOut(auth);
       clearUser();
+      clearLikes(); // Clear likes cache on logout
       router.push("/");
     } catch (error) {
       console.error("Logout error:", error);
