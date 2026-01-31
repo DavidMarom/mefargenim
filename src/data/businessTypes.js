@@ -1,5 +1,6 @@
 // Business types list - Edit this file to modify the available business types
 export const businessTypes = [
+  'הפעלות',
   'ימי הולדת',
   'שירותים',
   'לק ג׳ל',
