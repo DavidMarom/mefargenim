@@ -80,3 +80,21 @@ export async function updateUser(email, updateData) {
     throw error;
   }
 }
+
+/**
+ * Get all users from MongoDB
+ * @returns {Promise<Array>} - Array of all user documents
+ */
+export async function getAllUsers() {
+  try {
+    const client = await clientPromise;
+    const db = client.db(DB_NAME);
+    const collection = db.collection(COLLECTION_NAME);
+    
+    const users = await collection.find({}).toArray();
+    return users;
+  } catch (error) {
+    console.error('Error fetching all users:', error);
+    throw error;
+  }
+}
