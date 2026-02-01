@@ -2,14 +2,38 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { signInWithPopup, GoogleAuthProvider, User } from "firebase/auth";
 import { auth } from "../../services/fb";
 import { useUserStore } from "../../store/userStore";
 import useLikesStore from "../../store/likesStore";
 import styles from "./BizCard.module.css";
 
-export default function BizCard({ document }) {
-  const [loading, setLoading] = useState(false);
+interface BusinessDocument {
+  _id?: string | { toString(): string };
+  title?: string;
+  type?: string;
+  phone?: string;
+  city?: string;
+  [key: string]: unknown;
+}
+
+interface BizCardProps {
+  document: BusinessDocument;
+}
+
+interface LikeResponse {
+  success: boolean;
+  liked?: boolean;
+  count?: number;
+}
+
+interface UserCheckResponse {
+  created?: boolean;
+  exists?: boolean;
+}
+
+export default function BizCard({ document }: BizCardProps) {
+  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
   const user = useUserStore((state) => state.user);
   
@@ -20,7 +44,7 @@ export default function BizCard({ document }) {
     updateLikeStatus,
   } = useLikesStore();
   
-  const businessId = document?._id?.toString() || document?._id;
+  const businessId = document?._id?.toString() || (document?._id as string | undefined);
   const likeStatus = getLikeStatus(businessId);
   const liked = likeStatus.liked;
   const likeCount = likeStatus.count;
@@ -35,7 +59,7 @@ export default function BizCard({ document }) {
     }
   }, [user?.uid, businessId, fetchLikes]);
 
-  const handleLike = async () => {
+  const handleLike = async (): Promise<void> => {
     if (!user?.uid || loading) return;
 
     // Prevent liking if already liked
@@ -54,11 +78,11 @@ export default function BizCard({ document }) {
         }),
       });
 
-      const data = await response.json();
+      const data: LikeResponse = await response.json();
 
       if (data.success) {
         // Update the store with new like status
-        updateLikeStatus(businessId, data.liked, data.count || 0);
+        updateLikeStatus(businessId, data.liked || false, data.count || 0);
       }
     } catch (error) {
       console.error('Error toggling like:', error);
@@ -67,7 +91,7 @@ export default function BizCard({ document }) {
     }
   };
 
-  const handleGoogleLogin = async () => {
+  const handleGoogleLogin = async (): Promise<void> => {
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
@@ -104,7 +128,7 @@ export default function BizCard({ document }) {
             }),
           });
 
-          const data = await response.json();
+          const data: UserCheckResponse = await response.json();
           if (data.created) {
             console.log('New user created in database');
           } else if (data.exists) {
@@ -123,21 +147,25 @@ export default function BizCard({ document }) {
     }
   };
 
-  const handleOpen = () => {
-    if (!user) { handleGoogleLogin() }
-    else { router.push(`/business/${document._id?.toString() || document._id}`) }
+  const handleOpen = (): void => {
+    if (!user) { 
+      handleGoogleLogin();
+    } else { 
+      router.push(`/business/${document._id?.toString() || document._id}`);
+    }
   };
+
   // Function to get display label for field names
-  const getDisplayLabel = (key) => {
-    if (key === 'title') { return 'שם העסק' }
-    if (key === 'type') { return 'סוג העסק' }
-    if (key === 'phone') { return 'טלפון' }
-    if (key === 'city') { return 'עיר' }
+  const getDisplayLabel = (key: string): string => {
+    if (key === 'title') { return 'שם העסק'; }
+    if (key === 'type') { return 'סוג העסק'; }
+    if (key === 'phone') { return 'טלפון'; }
+    if (key === 'city') { return 'עיר'; }
     return key;
   };
 
   // Function to format phone number for tel: link (remove spaces, dashes, etc.)
-  const formatPhoneForTel = (phone) => {
+  const formatPhoneForTel = (phone: unknown): string => {
     if (!phone) return '';
     // Remove all non-digit characters except + for international numbers
     return phone.toString().replace(/[^\d+]/g, '');
@@ -160,7 +188,7 @@ export default function BizCard({ document }) {
       <div className={styles.cardContent}>
         {entries.map(([key, value], index) => {
           // Format the value for display
-          let displayValue = value;
+          let displayValue: string;
           if (value === null || value === undefined) {
             displayValue = 'לא זמין';
           } else if (typeof value === 'object') {

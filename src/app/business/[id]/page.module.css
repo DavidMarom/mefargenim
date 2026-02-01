@@ -68,7 +68,74 @@
   display: flex;
   gap: 1rem;
   justify-content: flex-end;
+  align-items: center;
   margin-top: 1rem;
+}
+
+.likeSection {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.likeButton {
+  padding: 0.5rem;
+  font-size: 1.25rem;
+  background-color: transparent;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  min-width: 2.5rem;
+}
+
+.likeButton:hover:not(:disabled) {
+  background-color: rgba(0, 0, 0, 0.1);
+  transform: scale(1.1);
+}
+
+.likeButton:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.likeButton:disabled {
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+.likeButton.liked {
+  background-color: transparent;
+}
+
+.likeButton.liked:hover {
+  background-color: rgba(220, 38, 38, 0.1);
+  transform: scale(1.1);
+}
+
+.heartIcon {
+  display: inline-block;
+  font-size: 1.5rem;
+  line-height: 1;
+  transition: transform 0.2s;
+}
+
+.likeButton.liked .heartIcon {
+  opacity: 1;
+}
+
+.likeButton:hover:not(:disabled) .heartIcon {
+  transform: scale(1.15);
+}
+
+.likeCount {
+  font-size: 0.875rem;
+  color: #666;
+  font-weight: 500;
 }
 
 .shareButton {
