@@ -73,6 +73,20 @@ export default function Dashboard() {
     <div className={styles.page}>
       <Navbar />
       <main className={styles.main}>
+        <div className={styles.quickFilterPillar}>
+          <button
+            onClick={() => setSelectedType("הפעלות")}
+            className={styles.pillarButton}
+          >
+            הפעלות
+          </button>
+          <button
+            onClick={() => setSelectedType("לק ג׳ל")}
+            className={styles.pillarButton}
+          >
+            לק ג׳ל
+          </button>
+        </div>
         <div className={styles.headerSection}>
           <h1>עסקים:</h1>
           <div className={styles.filtersContainer}>
