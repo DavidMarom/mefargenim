@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../../services/fb";
 import { useUserStore } from "../../../store/userStore";
+import useLikesStore from "../../../store/likesStore";
 import Navbar from "../../../components/Navbar/Navbar";
 import { useBusiness } from "../../../hooks/useBusiness";
 import styles from "./page.module.css";
@@ -12,6 +13,7 @@ import styles from "./page.module.css";
 export default function BusinessDetail() {
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [likeLoading, setLikeLoading] = useState(false);
   const params = useParams();
   const router = useRouter();
   const user = useUserStore((state) => state.user);
@@ -20,6 +22,18 @@ export default function BusinessDetail() {
 
   // Use React Query to fetch business
   const { data: business, isLoading: loadingBusiness, error } = useBusiness(params?.id);
+
+  // Get likes from store
+  const {
+    getLikeStatus,
+    fetchLikes,
+    updateLikeStatus,
+  } = useLikesStore();
+
+  const businessId = business?._id?.toString() || business?._id || params?.id;
+  const likeStatus = getLikeStatus(businessId);
+  const liked = likeStatus.liked;
+  const likeCount = likeStatus.count;
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
@@ -34,6 +48,16 @@ export default function BusinessDetail() {
 
     return () => unsubscribe();
   }, [router, setUser, clearUser]);
+
+  useEffect(() => {
+    if (user?.uid && businessId) {
+      // Fetch all likes if needed (only if 1 hour has passed)
+      const needsFetch = useLikesStore.getState().shouldFetch();
+      if (needsFetch) {
+        fetchLikes(user.uid);
+      }
+    }
+  }, [user?.uid, businessId, fetchLikes]);
 
   const handleShare = async () => {
     if (!params?.id) return;
@@ -56,6 +80,38 @@ export default function BusinessDetail() {
       // Fallback: try to open WhatsApp directly
       const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(url)}`;
       window.open(whatsappUrl, '_blank');
+    }
+  };
+
+  const handleLike = async () => {
+    if (!user?.uid || likeLoading) return;
+
+    // Prevent liking if already liked
+    if (liked) return;
+
+    try {
+      setLikeLoading(true);
+      const response = await fetch('/api/likes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user.uid,
+          businessId: businessId,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Update the store with new like status
+        updateLikeStatus(businessId, data.liked, data.count || 0);
+      }
+    } catch (error) {
+      console.error('Error toggling like:', error);
+    } finally {
+      setLikeLoading(false);
     }
   };
 
@@ -189,6 +245,21 @@ export default function BusinessDetail() {
             })}
           </div>
           <div className={styles.actions}>
+            <div className={styles.likeSection}>
+              <button
+                onClick={handleLike}
+                disabled={liked || likeLoading || !user}
+                className={`${styles.likeButton} ${liked ? styles.liked : ''}`}
+                aria-label={liked ? 'אהבתי' : 'אהב'}
+              >
+                <span className={styles.heartIcon}>
+                  {liked ? '❤️' : '🤍'}
+                </span>
+              </button>
+              {likeCount > 0 && (
+                <span className={styles.likeCount}>{likeCount}</span>
+              )}
+            </div>
             <button onClick={handleShare} className={styles.shareButton}>
               {copied ? '✓ הועתק!' : 'שתף'}
             </button>
