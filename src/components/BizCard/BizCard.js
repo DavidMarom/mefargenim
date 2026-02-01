@@ -136,6 +136,13 @@ export default function BizCard({ document }) {
     return key;
   };
 
+  // Function to format phone number for tel: link (remove spaces, dashes, etc.)
+  const formatPhoneForTel = (phone) => {
+    if (!phone) return '';
+    // Remove all non-digit characters except + for international numbers
+    return phone.toString().replace(/[^\d+]/g, '');
+  };
+
   // Only show title, type, phone, and city
   const allowedFields = ['title', 'type', 'phone', 'city'];
   const entries = Object.entries(document).filter(([key]) =>
@@ -174,10 +181,22 @@ export default function BizCard({ document }) {
           }
 
           // Other fields: show label and value
+          // Special handling for phone numbers - make them clickable
+          const isPhone = key === 'phone' && value && value !== 'לא זמין';
+          
           return (
             <div key={key} className={styles.field}>
               <span className={styles.label}>{getDisplayLabel(key)}:</span>
-              <span className={styles.value}>{displayValue}</span>
+              {isPhone ? (
+                <a 
+                  href={`tel:${formatPhoneForTel(value)}`}
+                  className={styles.phoneLink}
+                >
+                  {displayValue}
+                </a>
+              ) : (
+                <span className={styles.value}>{displayValue}</span>
+              )}
             </div>
           );
         })}
