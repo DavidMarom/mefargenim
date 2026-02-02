@@ -1,11 +1,12 @@
 "use client";
 
+import React, { ReactElement } from "react";
 import Link from "next/link";
 import Navbar from "../../components/Navbar/Navbar";
 import { useUserStore } from "../../store/userStore";
 import styles from "./page.module.css";
 
-export default function TermsPage() {
+export default function TermsPage(): ReactElement {
   const user = useUserStore((state) => state.user);
 
   return (
