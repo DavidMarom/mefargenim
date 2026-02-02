@@ -16,9 +16,9 @@ export default function Home() {
   const router = useRouter();
   const setUser = useUserStore((state) => state.setUser);
   const clearUser = useUserStore((state) => state.clearUser);
-  
-  // Use React Query to fetch recent businesses
-  const { data: recentBusinesses = [], isLoading: loadingBusinesses } = useRecentBusinesses(3);
+
+  // Use React Query to fetch recent businesses (show 4 on login screen)
+  const { data: recentBusinesses = [], isLoading: loadingBusinesses } = useRecentBusinesses(4);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -73,17 +73,11 @@ export default function Home() {
       <div className={styles.page}>
         <main className={styles.main}>
           <div className={styles.logoContainer}>
-            <Image
-              src="/mlogo.png"
-              alt="מפרגנים - פלטפורמה לעסקים מקומיים"
-              width={200}
-              height={200}
-              className={styles.logo}
-              priority
-            />
+            <Image src="/mlogo.png" alt="מפרגנים - פלטפורמה לעסקים מקומיים" width={200} height={200} className={styles.logo} priority />
           </div>
-          
+          <p>BETA</p>
           <GoogleLoginButton />
+
           {!loadingBusinesses && recentBusinesses.length > 0 && (
             <div className={styles.recentSection}>
               <h2 className={styles.recentTitle}>העסקים החדשים ביותר</h2>
