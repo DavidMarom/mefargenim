@@ -7,30 +7,13 @@ import { auth } from "../../services/fb";
 import { useUserStore } from "../../store/userStore";
 import useLikesStore from "../../store/likesStore";
 import styles from "./BizCard.module.css";
-
-interface BusinessDocument {
-  _id?: string | { toString(): string };
-  title?: string;
-  type?: string;
-  phone?: string;
-  city?: string;
-  [key: string]: unknown;
-}
-
-interface BizCardProps {
-  document: BusinessDocument;
-}
-
-interface LikeResponse {
-  success: boolean;
-  liked?: boolean;
-  count?: number;
-}
-
-interface UserCheckResponse {
-  created?: boolean;
-  exists?: boolean;
-}
+import { getDisplayLabel } from "./utils";
+import {
+  BizCardProps,
+  BusinessDocument,
+  LikeResponse,
+  UserCheckResponse,
+} from "./interfaces";
 
 export default function BizCard({ document }: BizCardProps) {
   const [loading, setLoading] = useState<boolean>(false);
@@ -153,15 +136,6 @@ export default function BizCard({ document }: BizCardProps) {
     } else { 
       router.push(`/business/${document._id?.toString() || document._id}`);
     }
-  };
-
-  // Function to get display label for field names
-  const getDisplayLabel = (key: string): string => {
-    if (key === 'title') { return 'שם העסק'; }
-    if (key === 'type') { return 'סוג העסק'; }
-    if (key === 'phone') { return 'טלפון'; }
-    if (key === 'city') { return 'עיר'; }
-    return key;
   };
 
   // Function to format phone number for tel: link (remove spaces, dashes, etc.)
