@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { signOut } from "firebase/auth";
@@ -8,14 +9,15 @@ import { useRouter } from "next/navigation";
 import { auth } from "../../services/fb";
 import { useUserStore } from "../../store/userStore";
 import styles from "./Navbar.module.css";
+import type { User as FirebaseUser } from "firebase/auth";
 
-export default function Navbar() {
+export default function Navbar(): React.ReactElement | null {
   const router = useRouter();
-  const user = useUserStore((state) => state.user);
-  const clearUser = useUserStore((state) => state.clearUser);
-  const clearLikes = useLikesStore((state) => state.clearLikes);
+  const user = useUserStore((state) => state.user as FirebaseUser | null);
+  const clearUser = useUserStore((state) => state.clearUser as () => void);
+  const clearLikes = useLikesStore((state) => state.clearLikes as () => void);
 
-  const handleLogout = async () => {
+  const handleLogout = async (): Promise<void> => {
     try {
       await signOut(auth);
       clearUser();
@@ -71,3 +73,4 @@ export default function Navbar() {
     </nav>
   );
 }
+
