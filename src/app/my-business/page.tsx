@@ -10,13 +10,7 @@ import { businessTypes } from "../../data/businessTypes";
 import { useMyBusiness } from "../../hooks/useMyBusiness";
 import { useSaveBusiness, useDeleteBusiness } from "../../hooks/useBusinessMutations";
 import styles from "./page.module.css";
-
-interface FormData {
-  title: string;
-  type: string;
-  phone: string;
-  city: string;
-}
+import { FormData } from "../../interface";
 
 export default function MyBusiness() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -30,10 +24,10 @@ export default function MyBusiness() {
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
   const clearUser = useUserStore((state) => state.clearUser);
-  
+
   // Use React Query to fetch my business
   const { data: business } = useMyBusiness(user?.uid);
-  
+
   // Mutations
   const saveBusinessMutation = useSaveBusiness();
   const deleteBusinessMutation = useDeleteBusiness();
@@ -76,7 +70,7 @@ export default function MyBusiness() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     if (!user?.uid) return;
 
     try {
@@ -94,10 +88,8 @@ export default function MyBusiness() {
   const handleDelete = async () => {
     if (!business || !user?.uid) return;
 
-    const confirmed = window.confirm(
-      "האם אתה בטוח שברצונך למחוק את העסק? פעולה זו לא ניתנת לביטול."
-    );
-    
+    const confirmed = window.confirm("האם אתה בטוח שברצונך למחוק את העסק? פעולה זו לא ניתנת לביטול.");
+
     if (!confirmed) return;
 
     try {
@@ -120,6 +112,7 @@ export default function MyBusiness() {
     return (
       <div className={styles.page}>
         <Navbar />
+
         <main className={styles.main}>
           <p>טוען...</p>
         </main>
@@ -127,9 +120,7 @@ export default function MyBusiness() {
     );
   }
 
-  if (!user) {
-    return null;
-  }
+  if (!user) { return null }
 
   return (
     <div className={styles.page}>
