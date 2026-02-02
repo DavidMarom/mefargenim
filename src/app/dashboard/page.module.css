@@ -114,6 +114,36 @@
   width: 100%;
 }
 
+.loadMoreContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.loadMoreButton {
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  border: none;
+  background-color: #e359cc;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease,
+    box-shadow 0.1s ease;
+}
+
+.loadMoreButton:hover {
+  background-color: #c44fb1;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+.loadMoreButton:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
 .noDocuments {
   text-align: center;
   color: #666;

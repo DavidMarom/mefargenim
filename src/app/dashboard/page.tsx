@@ -18,6 +18,7 @@ export default function Dashboard(): React.ReactElement | null {
   const [selectedType, setSelectedType] = useState<string>("all");
   const [selectedCity, setSelectedCity] = useState<string>("all");
   const [copied, setCopied] = useState<boolean>(false);
+  const [visibleCount, setVisibleCount] = useState<number>(12);
   const router = useRouter();
   const user = useUserStore((state) => state.user as FirebaseUser | null);
   const setUser = useUserStore((state) => state.setUser as (user: FirebaseUser) => void);
@@ -76,6 +77,12 @@ export default function Dashboard(): React.ReactElement | null {
     const cityMatch = selectedCity === "all" || doc.city === selectedCity;
     return typeMatch && cityMatch;
   });
+
+  const visibleDocuments = filteredDocuments.slice(0, visibleCount);
+
+  const handleLoadMore = () => {
+    setVisibleCount((prev) => prev + 12);
+  };
 
   return (
     <div className={styles.page}>
@@ -163,14 +170,27 @@ export default function Dashboard(): React.ReactElement | null {
             </button>
           </div>
         ) : (
-          <div className={styles.cardsGrid}>
-            {filteredDocuments.map((doc, index) => (
-              <BizCard
-                key={(doc._id as { toString(): string })?.toString() || index}
-                document={doc}
-              />
-            ))}
-          </div>
+          <>
+            <div className={styles.cardsGrid}>
+              {visibleDocuments.map((doc, index) => (
+                <BizCard
+                  key={(doc._id as { toString(): string })?.toString() || index}
+                  document={doc}
+                />
+              ))}
+            </div>
+            {filteredDocuments.length > visibleCount && (
+              <div className={styles.loadMoreContainer}>
+                <button
+                  type="button"
+                  className={styles.loadMoreButton}
+                  onClick={handleLoadMore}
+                >
+                  טען עוד
+                </button>
+              </div>
+            )}
+          </>
         )}
       </main>
     </div>
