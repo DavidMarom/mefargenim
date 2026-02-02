@@ -2,10 +2,12 @@
   background-color: #ffffff;
   border: 1px solid #e0e0e0;
   border-radius: 15px;
-  padding: 1.5rem;
+  padding: 0;
+  /* padding-bottom: 1.5rem; */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   min-width: 300px;
   max-width: 400px;
+  overflow: hidden;
 }
 
 .card:hover {
@@ -23,8 +25,16 @@
   flex-direction: row;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.2rem 0;
+  padding: 0.1rem 1.5rem;
   /* border-bottom: 1px solid #f0f0f0; */
+}
+
+.topField {
+  display: flex;
+  flex-direction: row;
+  padding: 0.2rem 0;
+  background-color: #e359cc;
+  font-size: 0.875rem;
 }
 
 .field:last-child {
@@ -32,11 +42,10 @@
 }
 
 .title {
-  margin: 0;
-  font-size: 1.5rem;
+  margin: 0.2rem 1.5rem;
+  font-size: 1.1rem;
   font-weight: 600;
-  color: #171717;
-  text-align: right;
+  color: #ffffff;
   word-break: break-word;
 }
 
@@ -82,6 +91,7 @@
   margin-top: 1rem;
   padding-top: 1rem;
   border-top: 1px solid #f0f0f0;
+  padding: 0.5rem 1rem;
 }
 
 .likeSection {

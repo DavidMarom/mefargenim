@@ -7,30 +7,13 @@ import { auth } from "../../services/fb";
 import { useUserStore } from "../../store/userStore";
 import useLikesStore from "../../store/likesStore";
 import styles from "./BizCard.module.css";
-
-interface BusinessDocument {
-  _id?: string | { toString(): string };
-  title?: string;
-  type?: string;
-  phone?: string;
-  city?: string;
-  [key: string]: unknown;
-}
-
-interface BizCardProps {
-  document: BusinessDocument;
-}
-
-interface LikeResponse {
-  success: boolean;
-  liked?: boolean;
-  count?: number;
-}
-
-interface UserCheckResponse {
-  created?: boolean;
-  exists?: boolean;
-}
+import { getDisplayLabel, formatPhoneForTel } from "./utils";
+import {
+  BizCardProps,
+  BusinessDocument,
+  LikeResponse,
+  UserCheckResponse,
+} from "./interfaces";
 
 export default function BizCard({ document }: BizCardProps) {
   const [loading, setLoading] = useState<boolean>(false);
@@ -62,7 +45,6 @@ export default function BizCard({ document }: BizCardProps) {
   const handleLike = async (): Promise<void> => {
     if (!user?.uid || loading) return;
 
-    // Prevent liking if already liked
     if (liked) return;
 
     try {
@@ -81,7 +63,6 @@ export default function BizCard({ document }: BizCardProps) {
       const data: LikeResponse = await response.json();
 
       if (data.success) {
-        // Update the store with new like status
         updateLikeStatus(businessId, data.liked || false, data.count || 0);
       }
     } catch (error) {
@@ -155,22 +136,6 @@ export default function BizCard({ document }: BizCardProps) {
     }
   };
 
-  // Function to get display label for field names
-  const getDisplayLabel = (key: string): string => {
-    if (key === 'title') { return 'שם העסק'; }
-    if (key === 'type') { return 'סוג העסק'; }
-    if (key === 'phone') { return 'טלפון'; }
-    if (key === 'city') { return 'עיר'; }
-    return key;
-  };
-
-  // Function to format phone number for tel: link (remove spaces, dashes, etc.)
-  const formatPhoneForTel = (phone: unknown): string => {
-    if (!phone) return '';
-    // Remove all non-digit characters except + for international numbers
-    return phone.toString().replace(/[^\d+]/g, '');
-  };
-
   // Only show title, type, phone, and city
   const allowedFields = ['title', 'type', 'phone', 'city'];
   const entries = Object.entries(document).filter(([key]) =>
@@ -202,7 +167,7 @@ export default function BizCard({ document }: BizCardProps) {
           // First field: show only value as H2, no label
           if (index === 0) {
             return (
-              <div key={key} className={styles.field}>
+              <div key={key} className={styles.topField}>
                 <h2 className={styles.title}>{displayValue}</h2>
               </div>
             );
