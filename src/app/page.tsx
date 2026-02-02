@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, User } from "firebase/auth";
 import Image from "next/image";
 import { auth } from "../services/fb";
 import { useUserStore } from "../store/userStore";
@@ -12,7 +12,7 @@ import styles from "./page.module.css";
 import GoogleLoginButton from "../components/GoogleLoginButton/GoogleLoginButton";
 
 export default function Home() {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
   const setUser = useUserStore((state) => state.setUser);
   const clearUser = useUserStore((state) => state.clearUser);
@@ -21,7 +21,7 @@ export default function Home() {
   const { data: recentBusinesses = [], isLoading: loadingBusinesses } = useRecentBusinesses(4);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user: User | null) => {
       if (user) {
         // Save user to store and redirect to dashboard
         setUser(user);
@@ -45,7 +45,7 @@ export default function Home() {
     );
   }
 
-  const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+  const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
 
   return (
     <>
@@ -63,17 +63,24 @@ export default function Home() {
               "@type": "SearchAction",
               "target": {
                 "@type": "EntryPoint",
-                "urlTemplate": `${baseUrl}/dashboard`
+                "urlTemplate": `${baseUrl}/dashboard`,
               },
-              "query-input": "required name=search_term_string"
-            }
-          })
+              "query-input": "required name=search_term_string",
+            },
+          }),
         }}
       />
       <div className={styles.page}>
         <main className={styles.main}>
           <div className={styles.logoContainer}>
-            <Image src="/mlogo.png" alt="מפרגנים - פלטפורמה לעסקים מקומיים" width={200} height={200} className={styles.logo} priority />
+            <Image
+              src="/mlogo.png"
+              alt="מפרגנים - פלטפורמה לעסקים מקומיים"
+              width={200}
+              height={200}
+              className={styles.logo}
+              priority
+            />
           </div>
           <p>BETA</p>
           <GoogleLoginButton />
@@ -82,7 +89,7 @@ export default function Home() {
             <div className={styles.recentSection}>
               <h2 className={styles.recentTitle}>העסקים החדשים ביותר</h2>
               <div className={styles.cardsGrid}>
-                {recentBusinesses.map((doc, index) => (
+                {recentBusinesses.map((doc: any, index: number) => (
                   <BizCard key={doc._id?.toString() || index} document={doc} />
                 ))}
               </div>
@@ -93,3 +100,4 @@ export default function Home() {
     </>
   );
 }
+
