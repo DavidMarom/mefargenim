@@ -37,6 +37,14 @@
   font-size: 0.875rem;
 }
 
+.topFieldHandyman {
+  background-color: #4285f4;
+}
+
+.topFieldActivities {
+  background-color: #20b758;
+}
+
 .field:last-child {
   border-bottom: none;
 }
