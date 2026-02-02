@@ -21,7 +21,7 @@ export default function Dashboard() {
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
   const clearUser = useUserStore((state) => state.clearUser);
-  
+
   // Use React Query to fetch businesses
   const { data: bizDocuments = [], isLoading: loadingBiz, error } = useBusinesses();
 
@@ -74,19 +74,12 @@ export default function Dashboard() {
       <Navbar />
       <main className={styles.main}>
         <div className={styles.quickFilterPillar}>
-          <button
-            onClick={() => setSelectedType("הפעלות")}
-            className={styles.pillarButton}
-          >
-            הפעלות
-          </button>
-          <button
-            onClick={() => setSelectedType("לק ג׳ל")}
-            className={styles.pillarButton}
-          >
-            לק ג׳ל
-          </button>
+          <button onClick={() => setSelectedType("הפעלות")} className={styles.pillarButton}>הפעלות</button>
+          <button onClick={() => setSelectedType("לק ג׳ל")} className={styles.pillarButton}>לק ג׳ל</button>
+          <button onClick={() => setSelectedType("הנדי-מן")} className={styles.pillarButton}>הנדי-מן</button>
+          <button onClick={() => setSelectedType("תוכן וסושיאל")} className={styles.pillarButton}>תוכן וסושיאל</button>
         </div>
+        
         <div className={styles.headerSection}>
           <h1>עסקים:</h1>
           <div className={styles.filtersContainer}>
@@ -135,7 +128,7 @@ export default function Dashboard() {
         ) : filteredDocuments.length === 0 ? (
           <div className={styles.noResultsContainer}>
             <p className={styles.noDocuments}>אין לנו כאלה... שלח לבעלי עסקים והם יוכלו להיות הראשונים במערכת!</p>
-            <button 
+            <button
               onClick={onShare}
               className={styles.shareButton}
             >
