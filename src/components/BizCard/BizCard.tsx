@@ -166,8 +166,13 @@ export default function BizCard({ document }: BizCardProps) {
 
           // First field: show only value as H2, no label
           if (index === 0) {
+            const isHandyman = (document as BusinessDocument)?.type === "הנדי-מן";
+            const isActivities = (document as BusinessDocument)?.type === "הפעלות";
             return (
-              <div key={key} className={styles.topField}>
+              <div
+                key={key}
+                className={`${styles.topField} ${isHandyman ? styles.topFieldHandyman : ""} ${isActivities ? styles.topFieldActivities : ""}`}
+              >
                 <h2 className={styles.title}>{displayValue}</h2>
               </div>
             );
