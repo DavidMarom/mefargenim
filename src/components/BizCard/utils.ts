@@ -14,3 +14,9 @@ export const getDisplayLabel = (key: string): string => {
   return key;
 };
 
+export const formatPhoneForTel = (phone: unknown): string => {
+  if (!phone) return "";
+  // Remove all non-digit characters except + for international numbers
+  return phone.toString().replace(/[^\d+]/g, "");
+};
+
