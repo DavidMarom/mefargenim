@@ -21,6 +21,8 @@ export default function AdminPanel() {
   const [saving, setSaving] = useState(false);
   const [exportingUsers, setExportingUsers] = useState(false);
   const [exportingBusinesses, setExportingBusinesses] = useState(false);
+  const [updatingSitemap, setUpdatingSitemap] = useState(false);
+  const [sitemapMessage, setSitemapMessage] = useState('');
   const [uploadingCSV, setUploadingCSV] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadMessage, setUploadMessage] = useState('');
@@ -263,6 +265,34 @@ export default function AdminPanel() {
     }
   };
 
+  const handleUpdateSitemap = async () => {
+    setUpdatingSitemap(true);
+    setSitemapMessage('');
+
+    try {
+      const response = await fetch('/api/sitemap/update', {
+        method: 'POST',
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to update sitemap');
+      }
+
+      const pingStatus = [];
+      if (data.googlePinged) pingStatus.push('Google');
+      if (data.bingPinged) pingStatus.push('Bing');
+      const pingText = pingStatus.length > 0 ? ` (נשלח ל-${pingStatus.join(' ו-')})` : '';
+      setSitemapMessage(`✅ עדכון sitemap הושלם בהצלחה! נמצאו ${data.businessesCount} עסקים${pingText}`);
+    } catch (error) {
+      console.error('Error updating sitemap:', error);
+      setSitemapMessage(`❌ שגיאה: ${error.message}`);
+    } finally {
+      setUpdatingSitemap(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className={styles.page}>
@@ -353,7 +383,17 @@ export default function AdminPanel() {
           >
             {exportingBusinesses ? 'מייצא...' : '📥 ייצא עסקים ל-CSV'}
           </button>
+          <button
+            onClick={handleUpdateSitemap}
+            disabled={updatingSitemap}
+            className={styles.exportButton}
+          >
+            {updatingSitemap ? 'מעדכן...' : '🔍 עדכן Sitemap (Google Indexing)'}
+          </button>
         </div>
+        {sitemapMessage && (
+          <p className={styles.uploadMessage}>{sitemapMessage}</p>
+        )}
 
         <div className={styles.importSection}>
           <h3>ייבא עסקים מקובץ CSV</h3>
