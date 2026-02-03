@@ -18,11 +18,25 @@
   width: 100%;
 }
 
+.pillarsContainer {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  margin-bottom: -1rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.connectedText {
+  font-size: 0.875rem;
+  color: #666;
+  text-align: right;
+}
+
 .quickFilterPillar {
   display: flex;
   justify-content: flex-end;
-  width: 100%;
-  margin-bottom: -1rem;
   gap: 0.75rem;
   flex-wrap: wrap;
 }
@@ -213,12 +227,26 @@
     width: 100%;
   }
 
-  .quickFilterPillar {
+  .pillarsContainer {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
     margin-bottom: -0.5rem;
+  }
+
+  .quickFilterPillar {
+    margin-bottom: 0;
   }
 
   .pillarButton {
     padding: 0.4rem 1.2rem;
     font-size: 0.85rem;
+  }
+
+  .connectedText{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    width: 100%;  
   }
 }
