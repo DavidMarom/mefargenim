@@ -19,6 +19,9 @@ export default function Dashboard(): React.ReactElement | null {
   const [selectedCity, setSelectedCity] = useState<string>("all");
   const [copied, setCopied] = useState<boolean>(false);
   const [visibleCount, setVisibleCount] = useState<number>(12);
+  const [connectedCount] = useState<number>(() => 
+    Math.floor(Math.random() * (1000 - 500 + 1)) + 500
+  );
   const router = useRouter();
   const user = useUserStore((state) => state.user as FirebaseUser | null);
   const setUser = useUserStore((state) => state.setUser as (user: FirebaseUser) => void);
@@ -88,7 +91,11 @@ export default function Dashboard(): React.ReactElement | null {
     <div className={styles.page}>
       <Navbar />
       <main className={styles.main}>
-        <div className={styles.quickFilterPillar}>
+        <div className={styles.pillarsContainer}>
+          <div className={styles.connectedText}>
+            מחוברים כרגע {connectedCount}
+          </div>
+          <div className={styles.quickFilterPillar}>
           <button
             onClick={() => setSelectedType("הפעלות")}
             className={styles.pillarButton}
@@ -113,6 +120,7 @@ export default function Dashboard(): React.ReactElement | null {
           >
             תוכן וסושיאל
           </button>
+          </div>
         </div>
 
         <div className={styles.headerSection}>
