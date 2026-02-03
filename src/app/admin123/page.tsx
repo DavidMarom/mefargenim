@@ -1,44 +1,103 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, FormEvent, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, User as FirebaseUser } from "firebase/auth";
 import { auth } from "../../services/fb";
 import { useUserStore } from "../../store/userStore";
 import Navbar from "../../components/Navbar/Navbar";
 import { businessTypes } from "../../data/businessTypes";
 import styles from "./page.module.css";
+import { FormData as BusinessFormData } from "../../interface";
 
 const ADMIN_PASSWORD = 'azsx';
 
+interface BusinessDocument {
+  _id?: {
+    toString(): string;
+  } | string;
+  title?: string;
+  name?: string;
+  type?: string;
+  phone?: string;
+  city?: string;
+  address?: string;
+  userId?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+interface ApiResponse {
+  success: boolean;
+  data?: BusinessDocument[];
+  error?: string;
+  message?: string;
+}
+
+interface BusinessCreateResponse {
+  success: boolean;
+  data?: BusinessDocument;
+  error?: string;
+}
+
+interface ImportResponse {
+  imported: number;
+  failed: number;
+  error?: string;
+}
+
+interface SitemapUpdateResponse {
+  success: boolean;
+  message?: string;
+  businessesCount: number;
+  sitemapUrl: string;
+  googlePinged: boolean;
+  bingPinged: boolean;
+  error?: string;
+}
+
+interface User {
+  uid: string;
+  email: string | null;
+  displayName: string | null;
+  photoURL: string | null;
+  emailVerified: boolean;
+  phoneNumber: string | null;
+  providerData: unknown[];
+  metadata: {
+    creationTime?: string;
+    lastSignInTime?: string;
+  };
+}
+
 export default function AdminPanel() {
-  const [loading, setLoading] = useState(true);
-  const [isPasswordAuthenticated, setIsPasswordAuthenticated] = useState(false);
-  const [passwordInput, setPasswordInput] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [bizDocuments, setBizDocuments] = useState([]);
-  const [loadingBiz, setLoadingBiz] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [exportingUsers, setExportingUsers] = useState(false);
-  const [exportingBusinesses, setExportingBusinesses] = useState(false);
-  const [updatingSitemap, setUpdatingSitemap] = useState(false);
-  const [sitemapMessage, setSitemapMessage] = useState('');
-  const [uploadingCSV, setUploadingCSV] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [uploadMessage, setUploadMessage] = useState('');
-  const [formData, setFormData] = useState({
+  const [loading, setLoading] = useState<boolean>(true);
+  const [isPasswordAuthenticated, setIsPasswordAuthenticated] = useState<boolean>(false);
+  const [passwordInput, setPasswordInput] = useState<string>('');
+  const [passwordError, setPasswordError] = useState<string>('');
+  const [bizDocuments, setBizDocuments] = useState<BusinessDocument[]>([]);
+  const [loadingBiz, setLoadingBiz] = useState<boolean>(true);
+  const [saving, setSaving] = useState<boolean>(false);
+  const [exportingUsers, setExportingUsers] = useState<boolean>(false);
+  const [exportingBusinesses, setExportingBusinesses] = useState<boolean>(false);
+  const [updatingSitemap, setUpdatingSitemap] = useState<boolean>(false);
+  const [sitemapMessage, setSitemapMessage] = useState<string>('');
+  const [uploadingCSV, setUploadingCSV] = useState<boolean>(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadMessage, setUploadMessage] = useState<string>('');
+  const [formData, setFormData] = useState<BusinessFormData>({
     title: '',
     type: '',
     phone: '',
     city: '',
   });
   const router = useRouter();
-  const user = useUserStore((state) => state.user);
+  const user = useUserStore((state) => state.user) as User | null;
   const setUser = useUserStore((state) => state.setUser);
   const clearUser = useUserStore((state) => state.clearUser);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
       if (firebaseUser) {
         setUser(firebaseUser);
       } else {
@@ -57,11 +116,11 @@ export default function AdminPanel() {
     }
   }, [user]);
 
-  const fetchBizDocuments = async () => {
+  const fetchBizDocuments = async (): Promise<void> => {
     try {
       setLoadingBiz(true);
       const response = await fetch('/api/biz');
-      const data = await response.json();
+      const data: ApiResponse = await response.json();
       
       if (data.success) {
         setBizDocuments(data.data || []);
@@ -75,7 +134,7 @@ export default function AdminPanel() {
     }
   };
 
-  const handlePasswordSubmit = (e) => {
+  const handlePasswordSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     if (passwordInput === ADMIN_PASSWORD) {
       setIsPasswordAuthenticated(true);
@@ -86,7 +145,7 @@ export default function AdminPanel() {
     }
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -94,7 +153,7 @@ export default function AdminPanel() {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     setSaving(true);
 
@@ -114,7 +173,7 @@ export default function AdminPanel() {
         }),
       });
 
-      const data = await response.json();
+      const data: BusinessCreateResponse = await response.json();
       
       if (data.success) {
         alert('העסק נוסף בהצלחה!');
@@ -137,7 +196,7 @@ export default function AdminPanel() {
     }
   };
 
-  const handleExportUsers = async () => {
+  const handleExportUsers = async (): Promise<void> => {
     setExportingUsers(true);
     try {
       const response = await fetch('/api/users/export');
@@ -167,13 +226,14 @@ export default function AdminPanel() {
       URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Error exporting users:', error);
-      alert(`שגיאה בייצוא המשתמשים: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      alert(`שגיאה בייצוא המשתמשים: ${errorMessage}`);
     } finally {
       setExportingUsers(false);
     }
   };
 
-  const handleExportBusinesses = async () => {
+  const handleExportBusinesses = async (): Promise<void> => {
     setExportingBusinesses(true);
     try {
       const response = await fetch('/api/biz/export');
@@ -203,14 +263,15 @@ export default function AdminPanel() {
       URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Error exporting businesses:', error);
-      alert(`שגיאה בייצוא העסקים: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      alert(`שגיאה בייצוא העסקים: ${errorMessage}`);
     } finally {
       setExportingBusinesses(false);
     }
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    const file = e.target.files?.[0];
     if (file) {
       if (!file.name.endsWith('.csv')) {
         alert('אנא בחר קובץ CSV בלבד');
@@ -223,7 +284,7 @@ export default function AdminPanel() {
     }
   };
 
-  const handleCSVUpload = async () => {
+  const handleCSVUpload = async (): Promise<void> => {
     if (!selectedFile) {
       alert('אנא בחר קובץ CSV להעלאה');
       return;
@@ -241,7 +302,7 @@ export default function AdminPanel() {
         body: formData,
       });
 
-      const data = await response.json();
+      const data: ImportResponse = await response.json();
 
       if (!response.ok) {
         throw new Error(data.error || 'Failed to import CSV');
@@ -252,20 +313,21 @@ export default function AdminPanel() {
       
       // Clear file input
       setSelectedFile(null);
-      const fileInput = document.querySelector('input[type="file"]');
+      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
       if (fileInput) fileInput.value = '';
 
       // Refresh business list
       fetchBizDocuments();
     } catch (error) {
       console.error('Error uploading CSV:', error);
-      setUploadMessage(`❌ שגיאה: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      setUploadMessage(`❌ שגיאה: ${errorMessage}`);
     } finally {
       setUploadingCSV(false);
     }
   };
 
-  const handleUpdateSitemap = async () => {
+  const handleUpdateSitemap = async (): Promise<void> => {
     setUpdatingSitemap(true);
     setSitemapMessage('');
 
@@ -274,20 +336,21 @@ export default function AdminPanel() {
         method: 'POST',
       });
 
-      const data = await response.json();
+      const data: SitemapUpdateResponse = await response.json();
 
       if (!response.ok) {
         throw new Error(data.error || 'Failed to update sitemap');
       }
 
-      const pingStatus = [];
+      const pingStatus: string[] = [];
       if (data.googlePinged) pingStatus.push('Google');
       if (data.bingPinged) pingStatus.push('Bing');
       const pingText = pingStatus.length > 0 ? ` (נשלח ל-${pingStatus.join(' ו-')})` : '';
       setSitemapMessage(`✅ עדכון sitemap הושלם בהצלחה! נמצאו ${data.businessesCount} עסקים${pingText}`);
     } catch (error) {
       console.error('Error updating sitemap:', error);
-      setSitemapMessage(`❌ שגיאה: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      setSitemapMessage(`❌ שגיאה: ${errorMessage}`);
     } finally {
       setUpdatingSitemap(false);
     }
@@ -348,16 +411,16 @@ export default function AdminPanel() {
 
   // Calculate statistics
   const totalBusinesses = bizDocuments.length;
-  const businessesByType = bizDocuments.reduce((acc, biz) => {
+  const businessesByType: Record<string, number> = bizDocuments.reduce((acc, biz) => {
     const type = biz.type || 'ללא סוג';
     acc[type] = (acc[type] || 0) + 1;
     return acc;
-  }, {});
-  const businessesByCity = bizDocuments.reduce((acc, biz) => {
+  }, {} as Record<string, number>);
+  const businessesByCity: Record<string, number> = bizDocuments.reduce((acc, biz) => {
     const city = biz.city || 'ללא עיר';
     acc[city] = (acc[city] || 0) + 1;
     return acc;
-  }, {});
+  }, {} as Record<string, number>);
 
   return (
     <div className={styles.page}>
