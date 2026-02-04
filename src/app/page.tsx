@@ -82,7 +82,12 @@ export default function Home() {
               priority
             />
           </div>
-          <p>BETA</p>
+
+          <div className={styles.betaInfo}>
+            <p>BETA</p>
+            <p>מחוברים כרגע {Math.floor(Math.random() * 501) + 500}</p>
+          </div>
+
           <GoogleLoginButton />
 
           {!loadingBusinesses && recentBusinesses.length > 0 && (
