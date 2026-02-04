@@ -65,6 +65,14 @@
   width: 100%;
 }
 
+.betaInfo{
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+}
+
+
 @media (max-width: 768px) {
   .main {
     padding: 1rem;

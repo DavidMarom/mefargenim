@@ -92,7 +92,7 @@ export default function GoogleLoginButton(): React.ReactElement {
         disabled={loading}
         className={styles.button}
       >
-        {loading ? "מתחבר..." : "התחבר עם Google"}
+        {loading ? "מתחבר..." : "כנסו!"}
       </button>
       {error && <p className={styles.error}>{error}</p>}
     </div>
