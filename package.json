@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "postbuild": "next-sitemap"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.90.20",
@@ -13,6 +14,7 @@
     "json2csv": "^6.0.0-alpha.2",
     "mongodb": "^7.0.0",
     "next": "16.1.6",
+    "next-sitemap": "^4.2.3",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "zustand": "^5.0.10"
