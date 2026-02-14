@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { onAuthStateChanged, User } from "firebase/auth";
 import Image from "next/image";
+import Link from "next/link";
 import { auth } from "../services/fb";
 import { useUserStore } from "../store/userStore";
 import BizCard from "../components/BizCard/BizCard";
@@ -84,11 +85,14 @@ export default function Home() {
           </div>
 
           <div className={styles.betaInfo}>
-            <p>BETA</p>
             <p>מחוברים כרגע {Math.floor(Math.random() * 501) + 500}</p>
           </div>
 
           <GoogleLoginButton />
+
+          <Link href="/blog" className={styles.blogLink}>
+            מאמרים וטיפים לקידום העסק שלכם בחינם
+          </Link>
 
           {!loadingBusinesses && recentBusinesses.length > 0 && (
             <div className={styles.recentSection}>
