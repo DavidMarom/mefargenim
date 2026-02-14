@@ -72,6 +72,16 @@
   align-items: center;
 }
 
+.blogLink {
+  color: var(--color-link, #2563eb);
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+.blogLink:hover {
+  text-decoration: underline;
+}
+
 
 @media (max-width: 768px) {
   .main {

@@ -1,0 +1,92 @@
+.page {
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+
+.main {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.backLink {
+  display: inline-block;
+  color: var(--color-link, #2563eb);
+  text-decoration: none;
+  font-size: 0.9375rem;
+  margin-bottom: 1rem;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #171717;
+  margin: 0 0 0.75rem;
+  line-height: 1.25;
+}
+
+.lead {
+  font-size: 1.125rem;
+  color: #525252;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.content {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #262626;
+}
+
+.content p {
+  margin: 0 0 1rem;
+}
+
+.content h2 {
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: #171717;
+  margin: 2rem 0 0.75rem;
+}
+
+.content h2:first-of-type {
+  margin-top: 1.5rem;
+}
+
+.content ol {
+  margin: 0 0 1rem;
+  padding-right: 1.5rem;
+  padding-left: 0;
+}
+
+.content li {
+  margin-bottom: 0.5rem;
+}
+
+.footer {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e5e5;
+}
+
+.footerNote {
+  font-size: 0.875rem;
+  color: #737373;
+  margin: 0 0 1rem;
+}
+
+.externalLink {
+  color: var(--color-link, #2563eb);
+  text-decoration: none;
+}
+
+.externalLink:hover {
+  text-decoration: underline;
+}

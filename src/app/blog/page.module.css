@@ -1,0 +1,53 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.main {
+  max-width: 640px;
+  width: 100%;
+  text-align: center;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #171717;
+  margin: 0 0 0.5rem;
+}
+
+.subtitle {
+  color: #525252;
+  margin: 0 0 1.5rem;
+}
+
+.postList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.postLink {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: var(--color-link, #2563eb);
+  text-decoration: none;
+}
+
+.postLink:hover {
+  text-decoration: underline;
+}
+
+.backLink {
+  color: var(--color-link, #2563eb);
+  text-decoration: none;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+}

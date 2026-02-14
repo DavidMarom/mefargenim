@@ -19,13 +19,18 @@ export default {
     };
   },
 
-  // Add dynamic business pages, similar to the previous sitemap.ts
+  // Add dynamic business pages + blog section for Google
   additionalPaths: async (config) => {
+    const blogPaths = [
+      { loc: '/blog', changefreq: 'weekly', priority: 0.8, lastmod: new Date().toISOString() },
+      { loc: '/blog/landing-page', changefreq: 'monthly', priority: 0.7, lastmod: new Date().toISOString() },
+    ];
+
     try {
       const { getAllBizDocuments } = await import('./src/services/biz.js');
       const businesses = await getAllBizDocuments();
 
-      return businesses.map((business) => {
+      const businessPaths = businesses.map((business) => {
         const id = business._id?.toString?.() ?? String(business._id);
         const lastDate = business.updatedAt || business.createdAt || new Date();
 
@@ -36,9 +41,11 @@ export default {
           lastmod: new Date(lastDate).toISOString(),
         };
       });
+
+      return [...businessPaths, ...blogPaths];
     } catch (error) {
       console.error('Error generating business URLs for sitemap:', error);
-      return [];
+      return blogPaths;
     }
   },
 
