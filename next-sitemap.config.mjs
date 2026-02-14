@@ -24,6 +24,7 @@ export default {
     const blogPaths = [
       { loc: '/blog', changefreq: 'weekly', priority: 0.8, lastmod: new Date().toISOString() },
       { loc: '/blog/landing-page', changefreq: 'monthly', priority: 0.7, lastmod: new Date().toISOString() },
+      { loc: '/blog/website-presence', changefreq: 'monthly', priority: 0.7, lastmod: new Date().toISOString() },
     ];
 
     try {

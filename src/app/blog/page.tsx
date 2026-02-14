@@ -22,6 +22,9 @@ export default function BlogPage() {
           <Link href="/blog/landing-page" className={styles.postLink}>
             קידום עסק עם דף נחיתה
           </Link>
+          <Link href="/blog/website-presence" className={styles.postLink}>
+            למה חשוב שיהיה לעסק אתר תדמית
+          </Link>
         </nav>
         <Link href="/" className={styles.backLink}>
           ← חזרה לדף הבית
