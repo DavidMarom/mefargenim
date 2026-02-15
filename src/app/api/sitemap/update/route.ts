@@ -6,7 +6,7 @@ export async function POST() {
     // Fetch all businesses from the database to verify they exist
     const businesses = await getAllBizDocuments();
     
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mefargenim.com';
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mefargenim.biz';
     const sitemapUrl = `${baseUrl}/sitemap.xml`;
     
     // Ping Google to request re-indexing of the sitemap
