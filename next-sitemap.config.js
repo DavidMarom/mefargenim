@@ -1,15 +1,13 @@
 /** @type {import('next-sitemap').IConfig} */
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mefargenim.biz';
 
-export default {
+module.exports = {
   siteUrl,
   generateRobotsTxt: true,
 
-  // Default changefreq/priority for regular pages
   changefreq: 'daily',
   priority: 0.7,
 
-  // Ensure all paths get a lastmod
   transform: async (config, path) => {
     return {
       loc: path,
@@ -19,8 +17,7 @@ export default {
     };
   },
 
-  // Add dynamic business pages + blog section for Google
-  additionalPaths: async (config) => {
+  additionalPaths: async () => {
     const blogPaths = [
       { loc: '/blog', changefreq: 'weekly', priority: 0.8, lastmod: new Date().toISOString() },
       { loc: '/blog/landing-page', changefreq: 'monthly', priority: 0.7, lastmod: new Date().toISOString() },
@@ -34,7 +31,6 @@ export default {
       const businessPaths = businesses.map((business) => {
         const id = business._id?.toString?.() ?? String(business._id);
         const lastDate = business.updatedAt || business.createdAt || new Date();
-
         return {
           loc: `/business/${id}`,
           changefreq: 'weekly',
@@ -50,7 +46,6 @@ export default {
     }
   },
 
-  // Mirror your existing robots.ts rules
   robotsTxtOptions: {
     policies: [
       {
@@ -59,6 +54,6 @@ export default {
         disallow: ['/admin123', '/api'],
       },
     ],
+    additionalSitemaps: [`${siteUrl}/sitemap.xml`],
   },
 };
-

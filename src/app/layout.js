@@ -10,7 +10,7 @@ const varelaRound = Varela_Round({
 });
 
 export const metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://mefargenim.com'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://mefargenim.biz'),
   title: {
     default: "מפרגנים - פלטפורמה לעסקים מקומיים",
     template: "%s | מפרגנים"
